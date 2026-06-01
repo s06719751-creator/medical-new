@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --animate-pulse-glow: pulseGlow 2s infinite ease-in-out;
+  --animate-float-slow: floatSlow 6s infinite ease-in-out;
+  --animate-float-medium: floatMedium 4s infinite ease-in-out;
+  --animate-gradient-shift: gradientShift 8s infinite alternate;
+}
+
+@keyframes pulseGlow {
+
+  0%,
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.4));
+  }
+
+  50% {
+    transform: scale(1.03);
+    filter: drop-shadow(0 0 25px rgba(217, 70, 239, 0.7));
+  }
+}
+
+@keyframes floatSlow {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes floatMedium {
+
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+
+  50% {
+    transform: translateY(-8px) translateX(4px);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+:root {
+  --color-dark-bg: #030014;
+  --color-dark-card: #080721;
+  --color-dark-border: rgba(255, 255, 255, 0.08);
+  --color-neon-purple: #a855f7;
+  --color-neon-violet: #7c3aed;
+  --color-neon-magenta: #d946ef;
+  --color-neon-blue: #06b6d4;
+
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #030014;
+  color: #e2e8f0;
+}
+
+body {
+  margin: 0;
+  background-color: #030014;
+  overflow-x: hidden;
+  color: #e2e8f0;
+}
+
+/* Custom background glow spots */
+.glow-spot {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.25;
+}
+
+/* Glassmorphism custom classes */
+.glass-panel {
+  background: rgba(8, 7, 33, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-heavy {
+  background: rgba(5, 4, 25, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-card-hover {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-5px);
+  border-color: rgba(168, 85, 247, 0.4);
+  box-shadow: 0 10px 30px -10px rgba(124, 58, 237, 0.3),
+    0 1px 1px 0 rgba(255, 255, 255, 0.1) inset;
+  background: rgba(8, 7, 33, 0.6);
+}
+
+/* Neon text utility */
+.text-glow {
+  text-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+}
+
+.text-glow-blue {
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+}
+
+/* Custom scrollbar for premium theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030014;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(124, 58, 237, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.5);
+}
+
+/* =====================================================================
+   CLINICAL REDESIGNED HUD UTILITIES & KEYFRAMES
+   ===================================================================== */
+
+/* Heartbeat ECG line path animation */
+@keyframes ecgLine {
+  0% {
+    stroke-dashoffset: 200;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.ecg-animate {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: ecgLine 4s linear infinite;
+}
+
+/* Neural pulse wave graph displacement */
+@keyframes neuralWave {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.wave-animate {
+  animation: neuralWave 8s linear infinite;
+}
+
+/* Glowing high-tech border utility */
+.neon-border-purple {
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+.neon-border-cyan {
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+  border-color: rgba(6, 182, 212, 0.3);
+}
+
+.neon-border-magenta {
+  box-shadow: 0 0 15px rgba(217, 70, 239, 0.2);
+  border-color: rgba(217, 70, 239, 0.3);
+}
+
+/* Springy card scale response */
+.hud-card-interactive {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hud-card-interactive:hover {
+  transform: scale(1.04) translateY(-3px);
+}
+
+/* Subtly moving backdrop circuit lines overlay */
+.tech-dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
