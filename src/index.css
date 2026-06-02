@@ -8,6 +8,8 @@
   --animate-wave-shift: waveShift 12s infinite alternate;
   --animate-shimmer: shimmer 3s infinite linear;
   --animate-teal-pulse: tealPulse 2s infinite ease-in-out;
+  --animate-float-bubble: floatBubble 8s infinite ease-in-out;
+  --animate-ribbon-pulse: ribbonPulse 2.5s infinite ease-in-out;
 }
 
 /* =====================================================================
@@ -73,6 +75,17 @@
 @keyframes slideIn {
   from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatBubble {
+  0%, 100% { transform: translateY(0) translateX(0) scale(1); }
+  33% { transform: translateY(-15px) translateX(10px) scale(1.05); }
+  66% { transform: translateY(-5px) translateX(-8px) scale(0.95); }
+}
+
+@keyframes ribbonPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(13, 148, 136, 0.15); }
+  50% { transform: scale(1.04); box-shadow: 0 4px 25px rgba(13, 148, 136, 0.3); }
 }
 
 /* =====================================================================
@@ -298,4 +311,31 @@ body {
   height: 60px;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23f0fdfa' d='M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E") no-repeat bottom;
   background-size: cover;
+}
+
+/* Staggered Animations */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* Interactive Hover underline for active items */
+.nav-link-hover {
+  position: relative;
+}
+.nav-link-hover::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #0d9488, #059669);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+.nav-link-hover:hover::after {
+  width: 80%;
 }

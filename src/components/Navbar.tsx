@@ -59,10 +59,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, onTabChange }) => {
             <button
               key={item.id}
               onClick={() => handleNavClick(item.id)}
-              className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+              className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-300 nav-link-hover ${
                 currentTab === item.id
-                  ? 'text-teal-700 bg-teal-50 font-semibold'
-                  : 'text-slate-500 hover:text-teal-700 hover:bg-teal-50/60'
+                  ? 'text-teal-700 bg-teal-50/70 font-semibold shadow-sm shadow-teal-100/10'
+                  : 'text-slate-500 hover:text-teal-700 hover:bg-teal-50/30'
               }`}
             >
               {item.label}

@@ -9,6 +9,29 @@ import {
 } from 'lucide-react';
 import heroImg from '../assets/hero_medical.png';
 
+const CountUpStat: React.FC<{ end: number; suffix?: string; duration?: number }> = ({
+  end,
+  suffix = '',
+  duration = 1500
+}) => {
+  const [count, setCount] = React.useState(0);
+
+  React.useEffect(() => {
+    let startTimestamp: number | null = null;
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      setCount(Math.floor(progress * end));
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }, [end, duration]);
+
+  return <>{count}{suffix}</>;
+};
+
 interface HomeProps {
   onTabChange: (tab: string) => void;
 }
@@ -51,6 +74,12 @@ export const Home: React.FC<HomeProps> = ({ onTabChange }) => {
         {/* Animated teal rings */}
         <div className="absolute top-1/2 right-[5%] -translate-y-1/2 w-[520px] h-[520px] rounded-full border border-teal-500/10 animate-[spin_30s_linear_infinite]" />
         <div className="absolute top-1/2 right-[5%] -translate-y-1/2 w-[420px] h-[420px] rounded-full border border-emerald-400/15 animate-[spin_20s_linear_infinite_reverse]" />
+
+        {/* Ambient floating bubbles */}
+        <div className="absolute top-[20%] left-[10%] w-4 h-4 rounded-full bg-teal-300/20 blur-[1px] animate-float-bubble" />
+        <div className="absolute top-[60%] left-[15%] w-6 h-6 rounded-full bg-emerald-300/10 blur-[2px] animate-float-bubble delay-200" />
+        <div className="absolute top-[40%] right-[30%] w-3.5 h-3.5 rounded-full bg-sky-300/25 blur-[1px] animate-float-bubble delay-300" />
+        <div className="absolute bottom-[20%] right-[10%] w-5 h-5 rounded-full bg-teal-300/15 blur-[2px] animate-float-bubble delay-100" />
 
         <div className="relative max-w-7xl mx-auto px-6 pt-16 pb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center z-10 w-full">
 
@@ -136,7 +165,7 @@ export const Home: React.FC<HomeProps> = ({ onTabChange }) => {
               </div>
 
               {/* HUD Overlay Card: Heart Rate */}
-              <div className="absolute top-[6%] left-[-14%] bg-white/95 backdrop-blur-md neon-border-purple rounded-2xl p-3.5 shadow-xl flex items-center gap-3 hud-card-interactive select-none">
+              <div className="absolute top-[6%] left-[-14%] bg-white/95 backdrop-blur-md neon-border-purple rounded-2xl p-3.5 shadow-xl flex items-center gap-3 hud-card-interactive select-none animate-float-medium">
                 <div className="w-9 h-9 rounded-xl bg-rose-50 flex items-center justify-center border border-rose-100 shrink-0">
                   <Heart className="w-4.5 h-4.5 text-rose-500 animate-[pulse_0.75s_infinite]" />
                 </div>
@@ -150,7 +179,7 @@ export const Home: React.FC<HomeProps> = ({ onTabChange }) => {
               </div>
 
               {/* HUD Overlay Card: AI Diagnosis */}
-              <div className="absolute top-[42%] right-[-14%] bg-white/95 backdrop-blur-md neon-border-cyan rounded-2xl p-3.5 shadow-xl flex items-center gap-3 hud-card-interactive select-none">
+              <div className="absolute top-[42%] right-[-14%] bg-white/95 backdrop-blur-md neon-border-cyan rounded-2xl p-3.5 shadow-xl flex items-center gap-3 hud-card-interactive select-none animate-float-slow delay-200">
                 <div className="w-9 h-9 rounded-xl bg-teal-50 flex items-center justify-center border border-teal-100 shrink-0">
                   <BrainCircuit className="w-4.5 h-4.5 text-teal-600 animate-pulse" />
                 </div>
@@ -161,7 +190,7 @@ export const Home: React.FC<HomeProps> = ({ onTabChange }) => {
               </div>
 
               {/* HUD Overlay Card: Health Score */}
-              <div className="absolute bottom-[6%] left-[-10%] bg-white/95 backdrop-blur-md neon-border-magenta rounded-2xl p-3.5 shadow-xl flex items-center gap-3 hud-card-interactive select-none">
+              <div className="absolute bottom-[6%] left-[-10%] bg-white/95 backdrop-blur-md neon-border-magenta rounded-2xl p-3.5 shadow-xl flex items-center gap-3 hud-card-interactive select-none animate-float-medium delay-400">
                 <div className="relative w-9 h-9 shrink-0">
                   <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                     <path className="text-teal-100" strokeWidth="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
@@ -192,17 +221,17 @@ export const Home: React.FC<HomeProps> = ({ onTabChange }) => {
       <section className="w-full bg-white border-b border-teal-100 py-10 px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
-            { value: '100K+', label: 'Happy Patients', icon: <Heart className="w-5 h-5 text-rose-400" /> },
-            { value: '98%', label: 'Satisfaction Rate', icon: <Star className="w-5 h-5 text-amber-400" /> },
-            { value: '500+', label: 'Expert Doctors', icon: <UserCheck className="w-5 h-5 text-teal-500" /> },
-            { value: '24/7', label: 'AI Support', icon: <Zap className="w-5 h-5 text-emerald-500" /> },
+            { end: 100, suffix: 'K+', label: 'Happy Patients', icon: <Heart className="w-5 h-5 text-rose-400" /> },
+            { end: 98, suffix: '%', label: 'Satisfaction Rate', icon: <Star className="w-5 h-5 text-amber-400" /> },
+            { end: 500, suffix: '+', label: 'Expert Doctors', icon: <UserCheck className="w-5 h-5 text-teal-500" /> },
+            { end: 24, suffix: '/7', label: 'AI Support', icon: <Zap className="w-5 h-5 text-emerald-500" /> },
           ].map((stat, i) => (
             <div key={i} className={`flex flex-col items-center gap-2 ${i > 0 ? 'border-l border-teal-100' : ''}`}>
               <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center">
                 {stat.icon}
               </div>
               <span className="text-3xl sm:text-4xl font-black font-mono bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-600">
-                {stat.value}
+                <CountUpStat end={stat.end} suffix={stat.suffix} />
               </span>
               <span className="text-xs uppercase tracking-widest text-slate-400 font-semibold">{stat.label}</span>
             </div>
