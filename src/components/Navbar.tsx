@@ -14,6 +14,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, onTabChange }) => {
 
   const menuItems = [
     { id: 'home', label: 'Home' },
+    { id: 'chat', label: 'AI Doctor' },
     { id: 'features', label: 'Features' },
     { id: 'doctors', label: 'Doctors' },
     { id: 'how-it-works', label: 'How It Works' },

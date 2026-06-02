@@ -21,6 +21,7 @@ import { BookAppointment } from './pages/BookAppointment';
 import { Auth } from './pages/Auth';
 import { Dashboard } from './pages/Dashboard';
 import { Admin } from './pages/Admin';
+import { AIChat } from './pages/AIChat';
 
 const AppContent: React.FC = () => {
   
@@ -58,6 +59,8 @@ const AppContent: React.FC = () => {
   // Render active component dynamically
   const renderActivePage = () => {
     switch (activeTab) {
+      case 'chat':
+        return <AIChat />;
       case 'home':
         return <Home onTabChange={handleTabChange} />;
       case 'features':

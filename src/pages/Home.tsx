@@ -122,11 +122,8 @@ export const Home: React.FC<HomeProps> = ({ onTabChange }) => {
                 <ArrowRight className="w-4 h-4" />
               </button>
               <button
-                onClick={() => {
-                  const chatTrigger = document.querySelector('button[class*="fixed bottom-6 right-6"]');
-                  if (chatTrigger) (chatTrigger as HTMLButtonElement).click();
-                }}
-                className="px-8 py-4 rounded-2xl text-sm font-bold text-white bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 hover:border-white/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.03] active:scale-95 duration-300"
+                onClick={() => onTabChange('chat')}
+                className="px-8 py-4 rounded-2xl text-sm font-bold text-white bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 hover:border-white/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.03] active:scale-95 duration-300 cursor-pointer"
               >
                 <MessageSquare className="w-4 h-4 text-teal-300" />
                 Talk to AI Doctor
