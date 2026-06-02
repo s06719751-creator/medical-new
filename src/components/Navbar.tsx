@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Menu, X, ShieldAlert, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, X, ShieldAlert, LogOut, LayoutDashboard, Activity } from 'lucide-react';
 
 interface NavbarProps {
   currentTab: string;
@@ -29,36 +29,40 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, onTabChange }) => {
   };
 
   return (
-    <nav className="sticky top-0 z-[100] w-full px-6 py-4 glass-panel border-b border-white/5 backdrop-blur-md">
+    <nav className="sticky top-0 z-[100] w-full px-6 py-3.5 bg-white/85 backdrop-blur-xl border-b border-teal-100 shadow-sm shadow-teal-100/40">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Brand Logo & Icon */}
-        <div 
+
+        {/* Brand Logo */}
+        <div
           onClick={() => handleNavClick('home')}
-          className="flex items-center gap-2 cursor-pointer select-none group"
+          className="flex items-center gap-2.5 cursor-pointer select-none group"
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 via-fuchsia-600 to-cyan-400 p-[1.5px] shadow-[0_0_15px_-3px_rgba(168,85,247,0.5)] group-hover:scale-105 transition-transform duration-300">
-            <div className="w-full h-full bg-[#030014] rounded-[10px] flex items-center justify-center">
-              <svg className="w-6 h-6 text-purple-400 group-hover:text-cyan-400 transition-colors" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 21 C16 17 20 14.2 20 10.2 C20 6.2 16.5 4 12 4 C7.5 4 4 6.2 4 10.2 C4 14.2 8 17 12 21 Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <path d="M12 7 L12 13 M9 10 L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 p-[1.5px] shadow-[0_4px_14px_rgba(13,148,136,0.35)] group-hover:scale-105 group-hover:shadow-[0_6px_20px_rgba(13,148,136,0.5)] transition-all duration-300">
+            <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
+              <svg className="w-5 h-5 text-teal-600 group-hover:text-emerald-600 transition-colors" viewBox="0 0 24 24" fill="none">
+                <path d="M12 3 C7 3 3.5 6 3.5 10.5 C3.5 15.5 8 19 12 22 C16 19 20.5 15.5 20.5 10.5 C20.5 6 17 3 12 3Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M8 12 L10.5 14.5 L16 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
           </div>
-          <span className="text-xl font-bold tracking-tight text-white font-sans bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-purple-300">
-            Medora <span className="text-purple-400 text-glow">AI</span>
-          </span>
+          <div className="flex flex-col">
+            <span className="text-lg font-extrabold tracking-tight font-sans bg-clip-text text-transparent bg-gradient-to-r from-teal-700 to-emerald-600 leading-tight">
+              Medora AI
+            </span>
+            <span className="text-[9px] font-semibold text-teal-400 uppercase tracking-widest font-mono leading-none">Clinical Intelligence</span>
+          </div>
         </div>
 
-        {/* Desktop Menu links */}
-        <div className="hidden lg:flex items-center gap-1">
+        {/* Desktop Menu */}
+        <div className="hidden lg:flex items-center gap-0.5">
           {menuItems.map((item) => (
             <button
               key={item.id}
               onClick={() => handleNavClick(item.id)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 hover:text-white ${
-                currentTab === item.id 
-                  ? 'text-purple-400 bg-purple-500/10 border border-purple-500/20' 
-                  : 'text-slate-400 border border-transparent hover:bg-white/5'
+              className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                currentTab === item.id
+                  ? 'text-teal-700 bg-teal-50 font-semibold'
+                  : 'text-slate-500 hover:text-teal-700 hover:bg-teal-50/60'
               }`}
             >
               {item.label}
@@ -70,28 +74,22 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, onTabChange }) => {
         <div className="hidden lg:flex items-center gap-3">
           {user ? (
             <div className="relative">
-              {/* Profile Bubble */}
               <button
                 onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                className="flex items-center gap-2 p-1 pl-3 rounded-full glass-panel border-white/10 hover:border-purple-500/30 transition-colors"
+                className="flex items-center gap-2 p-1 pl-3 rounded-full bg-white border border-teal-100 hover:border-teal-300 shadow-sm transition-all"
               >
-                <span className="text-xs font-semibold text-slate-300 max-w-[100px] truncate">{user.fullName}</span>
-                <img
-                  src={user.avatarUrl}
-                  alt={user.fullName}
-                  className="w-8 h-8 rounded-full border border-purple-400/30 object-cover bg-dark-bg"
-                />
+                <span className="text-xs font-semibold text-slate-600 max-w-[100px] truncate">{user.fullName}</span>
+                <img src={user.avatarUrl} alt={user.fullName} className="w-8 h-8 rounded-full border-2 border-teal-200 object-cover" />
               </button>
 
-              {/* Account Dropdown */}
               {profileDropdownOpen && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setProfileDropdownOpen(false)} />
-                  <div className="absolute right-0 mt-2 w-52 glass-panel-heavy rounded-2xl p-2 border-white/10 shadow-[0_15px_40px_-5px_rgba(0,0,0,0.8)] z-20 animate-[slideIn_0.2s_ease-out]">
+                  <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl p-2 border border-teal-100 shadow-[0_15px_40px_rgba(13,148,136,0.12)] z-20 animate-[slideIn_0.2s_ease-out]">
                     {user.role === 'admin' && (
                       <button
                         onClick={() => { handleNavClick('admin'); setProfileDropdownOpen(false); }}
-                        className="w-full text-left px-4 py-3 text-xs font-semibold text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors flex items-center gap-2"
+                        className="w-full text-left px-4 py-3 text-xs font-semibold text-rose-500 hover:bg-rose-50 rounded-xl transition-colors flex items-center gap-2"
                       >
                         <ShieldAlert className="w-4 h-4" />
                         Admin Terminal
@@ -99,15 +97,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, onTabChange }) => {
                     )}
                     <button
                       onClick={() => { handleNavClick('dashboard'); setProfileDropdownOpen(false); }}
-                      className="w-full text-left px-4 py-3 text-xs font-medium text-slate-200 hover:bg-white/5 rounded-xl transition-colors flex items-center gap-2"
+                      className="w-full text-left px-4 py-3 text-xs font-medium text-slate-700 hover:bg-teal-50 rounded-xl transition-colors flex items-center gap-2"
                     >
-                      <LayoutDashboard className="w-4 h-4 text-purple-400" />
+                      <LayoutDashboard className="w-4 h-4 text-teal-500" />
                       User Dashboard
                     </button>
-                    <hr className="my-1 border-white/5" />
+                    <hr className="my-1 border-teal-50" />
                     <button
                       onClick={() => { signOut(); setProfileDropdownOpen(false); handleNavClick('home'); }}
-                      className="w-full text-left px-4 py-3 text-xs font-medium text-slate-400 hover:text-slate-100 hover:bg-rose-500/10 rounded-xl transition-colors flex items-center gap-2"
+                      className="w-full text-left px-4 py-3 text-xs font-medium text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors flex items-center gap-2"
                     >
                       <LogOut className="w-4 h-4" />
                       Sign Out
@@ -120,41 +118,42 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, onTabChange }) => {
             <>
               <button
                 onClick={() => handleNavClick('login')}
-                className="px-5 py-2.5 rounded-full text-sm font-medium text-slate-300 hover:text-white border border-white/10 hover:border-white/20 transition-all hover:bg-white/5"
+                className="px-5 py-2.5 rounded-full text-sm font-medium text-teal-700 hover:text-teal-900 border border-teal-200 hover:border-teal-400 transition-all hover:bg-teal-50"
               >
                 Login
               </button>
               <button
                 onClick={() => handleNavClick('book-appointment')}
-                className="px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.65)] hover:scale-[1.02] active:scale-95 transition-all duration-200"
+                className="px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 shadow-[0_4px_14px_rgba(13,148,136,0.4)] hover:shadow-[0_6px_20px_rgba(13,148,136,0.55)] hover:scale-[1.02] active:scale-95 transition-all duration-200 flex items-center gap-1.5"
               >
-                Get Started
+                <Activity className="w-3.5 h-3.5" />
+                Get Started Free
               </button>
             </>
           )}
         </div>
 
-        {/* Mobile Hamburger toggle */}
+        {/* Mobile Hamburger */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden text-slate-300 hover:text-white p-2 rounded-xl border border-white/10 hover:bg-white/5 transition-colors"
+          className="lg:hidden text-teal-700 p-2 rounded-xl border border-teal-100 hover:bg-teal-50 transition-colors"
         >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
       {/* Mobile Menu Panel */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed left-0 right-0 top-[77px] bottom-0 bg-[#030014]/95 backdrop-blur-lg border-b border-white/5 z-50 p-6 flex flex-col justify-between animate-[slideIn_0.25s_ease-out]">
-          <div className="flex flex-col gap-2">
+        <div className="lg:hidden fixed left-0 right-0 top-[72px] bottom-0 bg-white/97 backdrop-blur-xl border-b border-teal-100 z-50 p-6 flex flex-col justify-between animate-[slideIn_0.25s_ease-out]">
+          <div className="flex flex-col gap-1">
             {menuItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
-                className={`w-full text-left px-5 py-3 rounded-xl text-base font-semibold transition-all ${
-                  currentTab === item.id 
-                    ? 'text-purple-400 bg-purple-500/10 border-l-4 border-purple-500' 
-                    : 'text-slate-400 hover:bg-white/5'
+                className={`w-full text-left px-5 py-3.5 rounded-2xl text-base font-semibold transition-all ${
+                  currentTab === item.id
+                    ? 'text-teal-700 bg-teal-50 border-l-4 border-teal-500 pl-4'
+                    : 'text-slate-500 hover:bg-teal-50 hover:text-teal-700'
                 }`}
               >
                 {item.label}
@@ -162,50 +161,35 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, onTabChange }) => {
             ))}
           </div>
 
-          <div className="flex flex-col gap-3 mt-6 border-t border-white/5 pt-6">
+          <div className="flex flex-col gap-3 mt-6 border-t border-teal-100 pt-6">
             {user ? (
               <>
                 <div className="flex items-center gap-3 px-3 py-2">
-                  <img src={user.avatarUrl} alt={user.fullName} className="w-10 h-10 rounded-full object-cover border border-purple-400/20" />
+                  <img src={user.avatarUrl} alt={user.fullName} className="w-10 h-10 rounded-full object-cover border-2 border-teal-200" />
                   <div>
-                    <h4 className="text-sm font-semibold text-white">{user.fullName}</h4>
-                    <span className="text-xs text-slate-400">{user.email}</span>
+                    <h4 className="text-sm font-bold text-slate-800">{user.fullName}</h4>
+                    <span className="text-xs text-teal-500">{user.email}</span>
                   </div>
                 </div>
                 {user.role === 'admin' && (
-                  <button
-                    onClick={() => handleNavClick('admin')}
-                    className="w-full py-3 px-5 text-sm font-semibold text-center rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 transition-all"
-                  >
+                  <button onClick={() => handleNavClick('admin')} className="w-full py-3 px-5 text-sm font-semibold text-center rounded-2xl bg-rose-50 text-rose-500 border border-rose-100">
                     Admin Terminal
                   </button>
                 )}
-                <button
-                  onClick={() => handleNavClick('dashboard')}
-                  className="w-full py-3 px-5 text-sm font-semibold text-center rounded-xl glass-panel text-slate-200 border-white/10"
-                >
+                <button onClick={() => handleNavClick('dashboard')} className="w-full py-3 px-5 text-sm font-semibold text-center rounded-2xl bg-teal-50 text-teal-700 border border-teal-200">
                   My Dashboard
                 </button>
-                <button
-                  onClick={() => { signOut(); handleNavClick('home'); }}
-                  className="w-full py-3 text-sm font-semibold text-center text-slate-500 hover:text-slate-300"
-                >
+                <button onClick={() => { signOut(); handleNavClick('home'); }} className="w-full py-3 text-sm font-semibold text-center text-slate-400 hover:text-slate-600">
                   Sign Out
                 </button>
               </>
             ) : (
               <>
-                <button
-                  onClick={() => handleNavClick('login')}
-                  className="w-full py-3 text-sm font-semibold text-center rounded-xl border border-white/10 text-slate-300"
-                >
+                <button onClick={() => handleNavClick('login')} className="w-full py-3 text-sm font-semibold text-center rounded-2xl border border-teal-200 text-teal-700">
                   Login
                 </button>
-                <button
-                  onClick={() => handleNavClick('book-appointment')}
-                  className="w-full py-3 text-sm font-semibold text-center rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white shadow-lg"
-                >
-                  Get Started
+                <button onClick={() => handleNavClick('book-appointment')} className="w-full py-3 text-sm font-semibold text-center rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-lg">
+                  Get Started Free
                 </button>
               </>
             )}

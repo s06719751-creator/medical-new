@@ -3,36 +3,39 @@ import React from 'react';
 interface GlowingCardProps {
   children: React.ReactNode;
   className?: string;
-  glowColor?: 'purple' | 'blue' | 'magenta' | 'none';
+  glowColor?: 'teal' | 'emerald' | 'sky' | 'purple' | 'blue' | 'magenta' | 'none';
   onClick?: () => void;
 }
 
 export const GlowingCard: React.FC<GlowingCardProps> = ({
   children,
   className = '',
-  glowColor = 'purple',
+  glowColor = 'teal',
   onClick
 }) => {
   const getGlowStyle = () => {
     switch (glowColor) {
+      case 'teal':
       case 'purple':
-        return 'hover:shadow-[0_0_30px_-5px_rgba(168,85,247,0.25)] hover:border-purple-500/40';
+        return 'hover:shadow-[0_12px_35px_-5px_rgba(13,148,136,0.2)] hover:border-teal-300';
+      case 'emerald':
       case 'blue':
-        return 'hover:shadow-[0_0_30px_-5px_rgba(6,182,212,0.25)] hover:border-cyan-400/40';
+        return 'hover:shadow-[0_12px_35px_-5px_rgba(5,150,105,0.2)] hover:border-emerald-300';
+      case 'sky':
       case 'magenta':
-        return 'hover:shadow-[0_0_30px_-5px_rgba(217,70,239,0.25)] hover:border-fuchsia-500/40';
+        return 'hover:shadow-[0_12px_35px_-5px_rgba(14,165,233,0.2)] hover:border-sky-300';
       default:
-        return 'hover:border-white/20';
+        return 'hover:border-teal-200';
     }
   };
 
   return (
     <div
       onClick={onClick}
-      className={`glass-panel glass-card-hover rounded-2xl p-6 ${getGlowStyle()} ${onClick ? 'cursor-pointer' : ''} ${className}`}
+      className={`relative bg-white border border-teal-100/80 shadow-[0_2px_12px_rgba(13,148,136,0.06)] rounded-2xl p-6 transition-all duration-300 ${getGlowStyle()} ${onClick ? 'cursor-pointer' : ''} ${className}`}
     >
-      {/* Top glowing ambient gradient bar */}
-      <div className="absolute top-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent pointer-events-none" />
+      {/* Top teal accent line */}
+      <div className="absolute top-0 left-10 right-10 h-[1.5px] bg-gradient-to-r from-transparent via-teal-400/40 to-transparent pointer-events-none rounded-full" />
       {children}
     </div>
   );

@@ -102,11 +102,11 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen relative overflow-hidden bg-[#030014] text-[#e2e8f0]">
-      {/* Dynamic background ambient glowing dots */}
-      <div className="absolute top-[10%] left-[5%] w-[350px] h-[350px] bg-purple-900/10 rounded-full blur-[100px] pointer-events-none -z-10" />
-      <div className="absolute top-[40%] right-[5%] w-[300px] h-[300px] bg-cyan-900/10 rounded-full blur-[80px] pointer-events-none -z-10" />
-      <div className="absolute bottom-[10%] left-[20%] w-[400px] h-[400px] bg-fuchsia-950/10 rounded-full blur-[120px] pointer-events-none -z-10" />
+    <div className="flex flex-col min-h-screen relative overflow-hidden bg-[#f0fdfa] text-[#134e4a]">
+      {/* Soft teal ambient blobs */}
+      <div className="absolute top-[10%] left-[5%] w-[350px] h-[350px] bg-teal-200/30 rounded-full blur-[100px] pointer-events-none -z-10" />
+      <div className="absolute top-[40%] right-[5%] w-[300px] h-[300px] bg-emerald-200/30 rounded-full blur-[80px] pointer-events-none -z-10" />
+      <div className="absolute bottom-[10%] left-[20%] w-[400px] h-[400px] bg-sky-100/40 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       {/* Premium Navbar */}
       <Navbar currentTab={activeTab} onTabChange={handleTabChange} />

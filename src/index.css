@@ -1,160 +1,227 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --animate-pulse-glow: pulseGlow 2s infinite ease-in-out;
-  --animate-float-slow: floatSlow 6s infinite ease-in-out;
-  --animate-float-medium: floatMedium 4s infinite ease-in-out;
-  --animate-gradient-shift: gradientShift 8s infinite alternate;
+  --animate-pulse-glow: pulseGlow 2.5s infinite ease-in-out;
+  --animate-float-slow: floatSlow 7s infinite ease-in-out;
+  --animate-float-medium: floatMedium 4.5s infinite ease-in-out;
+  --animate-wave-shift: waveShift 12s infinite alternate;
+  --animate-shimmer: shimmer 3s infinite linear;
+  --animate-teal-pulse: tealPulse 2s infinite ease-in-out;
 }
 
+/* =====================================================================
+   KEYFRAMES
+   ===================================================================== */
+
 @keyframes pulseGlow {
-
-  0%,
-  100% {
+  0%, 100% {
     transform: scale(1);
-    filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.4));
+    filter: drop-shadow(0 0 10px rgba(13, 148, 136, 0.25));
   }
-
   50% {
-    transform: scale(1.03);
-    filter: drop-shadow(0 0 25px rgba(217, 70, 239, 0.7));
+    transform: scale(1.025);
+    filter: drop-shadow(0 0 22px rgba(5, 150, 105, 0.4));
   }
 }
 
 @keyframes floatSlow {
-
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-12px);
-  }
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(0.5deg); }
 }
 
 @keyframes floatMedium {
-
-  0%,
-  100% {
-    transform: translateY(0px) translateX(0px);
-  }
-
-  50% {
-    transform: translateY(-8px) translateX(4px);
-  }
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  50% { transform: translateY(-9px) translateX(5px); }
 }
 
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  100% {
-    background-position: 100% 50%;
-  }
+@keyframes waveShift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes tealPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(13, 148, 136, 0); }
+}
+
+@keyframes ecgLine {
+  0% { stroke-dashoffset: 200; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes neuralWave {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================================================
+   ROOT DESIGN TOKENS — Clinical Teal Palette
+   ===================================================================== */
 
 :root {
-  --color-dark-bg: #030014;
-  --color-dark-card: #080721;
-  --color-dark-border: rgba(255, 255, 255, 0.08);
-  --color-neon-purple: #a855f7;
-  --color-neon-violet: #7c3aed;
-  --color-neon-magenta: #d946ef;
-  --color-neon-blue: #06b6d4;
+  /* Brand Colors */
+  --color-teal-primary: #0d9488;
+  --color-teal-dark: #0f766e;
+  --color-teal-light: #2dd4bf;
+  --color-emerald: #059669;
+  --color-sky: #0ea5e9;
+
+  /* Backgrounds */
+  --color-bg: #f0fdfa;
+  --color-bg-alt: #f8fffe;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f0fdfa;
+
+  /* Text */
+  --color-text-primary: #134e4a;
+  --color-text-secondary: #0f766e;
+  --color-text-muted: #5eada6;
+
+  /* Borders */
+  --color-border: rgba(13, 148, 136, 0.15);
+  --color-border-strong: rgba(13, 148, 136, 0.3);
 
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background-color: #030014;
-  color: #e2e8f0;
+  background-color: #f0fdfa;
+  color: #134e4a;
 }
 
 body {
   margin: 0;
-  background-color: #030014;
+  background-color: #f0fdfa;
   overflow-x: hidden;
-  color: #e2e8f0;
+  color: #134e4a;
 }
 
-/* Custom background glow spots */
+/* =====================================================================
+   GLASS PANELS — Frosted Teal Glass
+   ===================================================================== */
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(13, 148, 136, 0.12);
+}
+
+.glass-panel-heavy {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(13, 148, 136, 0.18);
+  box-shadow: 0 8px 32px rgba(13, 148, 136, 0.08);
+}
+
+.glass-card-hover {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-6px);
+  border-color: rgba(13, 148, 136, 0.35);
+  box-shadow: 0 20px 40px -8px rgba(13, 148, 136, 0.15);
+}
+
+/* =====================================================================
+   AMBIENT GLOW SPOTS
+   ===================================================================== */
+
 .glow-spot {
   position: absolute;
   border-radius: 50%;
   filter: blur(120px);
   z-index: 0;
   pointer-events: none;
-  opacity: 0.25;
-}
-
-/* Glassmorphism custom classes */
-.glass-panel {
-  background: rgba(8, 7, 33, 0.4);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.glass-panel-heavy {
-  background: rgba(5, 4, 25, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.glass-card-hover {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-card-hover:hover {
-  transform: translateY(-5px);
-  border-color: rgba(168, 85, 247, 0.4);
-  box-shadow: 0 10px 30px -10px rgba(124, 58, 237, 0.3),
-    0 1px 1px 0 rgba(255, 255, 255, 0.1) inset;
-  background: rgba(8, 7, 33, 0.6);
-}
-
-/* Neon text utility */
-.text-glow {
-  text-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
-}
-
-.text-glow-blue {
-  text-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
-}
-
-/* Custom scrollbar for premium theme */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #030014;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(124, 58, 237, 0.3);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(168, 85, 247, 0.5);
 }
 
 /* =====================================================================
-   CLINICAL REDESIGNED HUD UTILITIES & KEYFRAMES
+   TEAL UTILITY CLASSES
    ===================================================================== */
 
-/* Heartbeat ECG line path animation */
-@keyframes ecgLine {
-  0% {
-    stroke-dashoffset: 200;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
+/* Teal text glow */
+.text-glow {
+  text-shadow: 0 2px 16px rgba(13, 148, 136, 0.25);
 }
+
+.text-glow-blue {
+  text-shadow: 0 2px 12px rgba(14, 165, 233, 0.25);
+}
+
+/* Shimmer gradient text */
+.text-shimmer {
+  background: linear-gradient(90deg, #0d9488, #2dd4bf, #059669, #0ea5e9, #0d9488);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Teal border effects */
+.teal-border {
+  box-shadow: 0 4px 20px rgba(13, 148, 136, 0.12);
+  border-color: rgba(13, 148, 136, 0.25);
+}
+
+.neon-border-purple {
+  box-shadow: 0 4px 20px rgba(13, 148, 136, 0.1);
+  border-color: rgba(13, 148, 136, 0.2);
+}
+
+.neon-border-cyan {
+  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.2);
+}
+
+.neon-border-magenta {
+  box-shadow: 0 4px 20px rgba(5, 150, 105, 0.1);
+  border-color: rgba(5, 150, 105, 0.2);
+}
+
+/* Teal badge */
+.teal-badge {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.1), rgba(5, 150, 105, 0.08));
+  border: 1px solid rgba(13, 148, 136, 0.2);
+  color: #0f766e;
+}
+
+/* =====================================================================
+   CARD INTERACTIONS
+   ===================================================================== */
+
+.hud-card-interactive {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hud-card-interactive:hover {
+  transform: scale(1.04) translateY(-4px);
+  box-shadow: 0 12px 30px rgba(13, 148, 136, 0.15);
+}
+
+/* =====================================================================
+   ANIMATED ECG & WAVES
+   ===================================================================== */
 
 .ecg-animate {
   stroke-dasharray: 100;
@@ -162,47 +229,73 @@ body {
   animation: ecgLine 4s linear infinite;
 }
 
-/* Neural pulse wave graph displacement */
-@keyframes neuralWave {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
 .wave-animate {
   animation: neuralWave 8s linear infinite;
 }
 
-/* Glowing high-tech border utility */
-.neon-border-purple {
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
-  border-color: rgba(168, 85, 247, 0.3);
-}
+/* =====================================================================
+   DOT GRID BACKGROUND
+   ===================================================================== */
 
-.neon-border-cyan {
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
-  border-color: rgba(6, 182, 212, 0.3);
-}
-
-.neon-border-magenta {
-  box-shadow: 0 0 15px rgba(217, 70, 239, 0.2);
-  border-color: rgba(217, 70, 239, 0.3);
-}
-
-/* Springy card scale response */
-.hud-card-interactive {
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.hud-card-interactive:hover {
-  transform: scale(1.04) translateY(-3px);
-}
-
-/* Subtly moving backdrop circuit lines overlay */
 .tech-dot-grid {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 20px 20px;
+  background-image: radial-gradient(rgba(13, 148, 136, 0.08) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* =====================================================================
+   CUSTOM SCROLLBAR — Teal
+   ===================================================================== */
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f0fdfa; }
+::-webkit-scrollbar-thumb {
+  background: rgba(13, 148, 136, 0.25);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(13, 148, 136, 0.45);
+}
+
+/* =====================================================================
+   PREMIUM BUTTON STYLES
+   ===================================================================== */
+
+.btn-primary {
+  background: linear-gradient(135deg, #0d9488, #059669);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.35);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0f766e, #047857);
+  box-shadow: 0 8px 24px rgba(13, 148, 136, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: white;
+  color: #0d9488;
+  border: 1.5px solid rgba(13, 148, 136, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+  background: rgba(13, 148, 136, 0.06);
+  border-color: #0d9488;
+}
+
+/* =====================================================================
+   HERO WAVE DIVIDER
+   ===================================================================== */
+
+.wave-divider {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23f0fdfa' d='M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E") no-repeat bottom;
+  background-size: cover;
 }

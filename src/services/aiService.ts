@@ -10,24 +10,137 @@ export interface ChatResponse {
   };
 }
 
-/**
- * You are Medora AI Assistant. You provide general health education and wellness guidance. 
- * You do not diagnose, prescribe medication, or replace licensed medical care. 
- * For urgent or severe symptoms, advise immediate medical attention.
- */
+// =====================================================================
+// MEDICAL-ONLY SYSTEM PROMPT FOR GPT
+// Strictly restricts the AI to medical/health topics only
+// =====================================================================
+
+const MEDICAL_SYSTEM_PROMPT = `You are Medora AI, an advanced clinical health intelligence assistant integrated into the Medora AI healthcare platform.
+
+STRICT RULES — FOLLOW EXACTLY:
+1. MEDICAL TOPICS ONLY: You ONLY discuss health, medicine, wellness, symptoms, anatomy, pharmacology, nutrition, mental health, clinical procedures, medical terminology, and healthcare-related subjects.
+2. OFF-TOPIC REFUSAL: If the user asks about anything unrelated to health or medicine (e.g., coding, politics, entertainment, finance, sports, general knowledge), respond ONLY with: "I'm your dedicated medical AI assistant. I can only help with health and medical questions. Is there anything about your health I can assist with?"
+3. NO DIAGNOSIS: You provide general health education only. Never diagnose specific conditions or prescribe medications. Always recommend consulting a licensed physician for diagnosis and treatment.
+4. EMERGENCY PROTOCOL: For any life-threatening symptoms (chest pain, difficulty breathing, stroke signs, severe bleeding, unconsciousness), immediately direct the user to call emergency services (911 / 112).
+5. DISCLAIMER: Always clarify you are an AI assistant, not a licensed physician, when giving health guidance.
+6. EVIDENCE-BASED: Base all information on established medical literature and clinical guidelines.
+7. COMPASSIONATE TONE: Be warm, professional, and empathetic like a knowledgeable healthcare companion.
+
+Platform Context: You are integrated into Medora AI — a healthcare platform with 500+ board-certified doctors, AI diagnostics, and telemedicine consultations. You can guide users to book appointments, find doctors, or use the dashboard.`;
+
+// Topics that indicate non-medical queries (for fast local check)
+const NON_MEDICAL_KEYWORDS = [
+  'javascript', 'python', 'code', 'programming', 'software', 'game', 'movie', 'music',
+  'recipe', 'cook', 'finance', 'stock', 'crypto', 'bitcoin', 'invest', 'politics',
+  'election', 'sport', 'football', 'cricket', 'weather', 'news', 'joke', 'poem',
+  'write essay', 'translate', 'math problem', 'solve equation'
+];
+
+const isLikelyNonMedical = (text: string): boolean => {
+  const lower = text.toLowerCase();
+  return NON_MEDICAL_KEYWORDS.some(kw => lower.includes(kw));
+};
+
+// =====================================================================
+// OPENAI API CALL (with medical-only system prompt)
+// =====================================================================
+
+const callOpenAI = async (
+  userMessage: string,
+  history: { sender: 'user' | 'ai'; message: string }[]
+): Promise<string | null> => {
+  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+  if (!apiKey) return null;
+
+  // Build message array for OpenAI
+  const messages: { role: 'system' | 'user' | 'assistant'; content: string }[] = [
+    { role: 'system', content: MEDICAL_SYSTEM_PROMPT }
+  ];
+
+  // Add conversation history (last 8 exchanges for context)
+  const recentHistory = history.slice(-16);
+  for (const h of recentHistory) {
+    messages.push({
+      role: h.sender === 'user' ? 'user' : 'assistant',
+      content: h.message
+    });
+  }
+
+  // Add current user message
+  messages.push({ role: 'user', content: userMessage });
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages,
+        max_tokens: 600,
+        temperature: 0.4,
+        presence_penalty: 0.1,
+        frequency_penalty: 0.1
+      })
+    });
+
+    if (!response.ok) {
+      console.error('OpenAI API error:', response.status, await response.text());
+      return null;
+    }
+
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content ?? null;
+  } catch (err) {
+    console.error('OpenAI fetch error:', err);
+    return null;
+  }
+};
+
+// =====================================================================
+// EMERGENCY DETECTION (always runs first, before any AI)
+// =====================================================================
+
+const EMERGENCY_PATTERNS = [
+  'chest pain', 'chest pressure', 'crushing chest', 'heart attack',
+  'breathing difficulty', 'shortness of breath', "can't breathe", 'cant breathe',
+  'severe bleeding', 'bleeding heavily', 'stroke', 'facial droop', 'speech slur',
+  'unconscious', 'passed out', 'loss of consciousness', 'overdose', 'suicidal'
+];
+
+const hasEmergency = (text: string): boolean => {
+  const lower = text.toLowerCase();
+  return EMERGENCY_PATTERNS.some(p => lower.includes(p));
+};
+
+// =====================================================================
+// MAIN CHATBOT RESPONSE FUNCTION
+// =====================================================================
+
 export const getChatbotResponse = async (
   userInput: string,
   history: { sender: 'user' | 'ai'; message: string }[],
   knowledgeBase: ChatbotKnowledge[]
 ): Promise<ChatResponse> => {
-  
-  // 1. Attempt to invoke the Supabase Edge Function 'medora-chatbot' securely
-  // if Supabase is active, preventing exposure of private AI API keys in the frontend
+
+  const text = userInput.toLowerCase().trim();
+
+  // 1. Emergency check — always first
+  if (hasEmergency(text)) {
+    return {
+      message: '🚨 CRITICAL ALERT: The symptoms you described may be life-threatening.\n\n**Please call emergency services immediately: 911 (US) or 112 (Global) or go to your nearest Emergency Room. Do not wait.**\n\nIf you are with someone experiencing these symptoms, help them stay calm and do not leave them alone.',
+      suggestedAction: { type: 'link', label: 'Contact Emergency Support', value: 'contact' }
+    };
+  }
+
+  // 2. Try Supabase Edge Function first (production-grade, no key exposure)
   if (supabase) {
     try {
       const { data, error } = await supabase.functions.invoke('medora-chatbot', {
-        body: { 
-          message: userInput, 
+        body: {
+          message: userInput,
           history: history.map(h => ({
             role: h.sender === 'user' ? 'user' : 'model',
             parts: [{ text: h.message }]
@@ -38,169 +151,80 @@ export const getChatbotResponse = async (
         return data as ChatResponse;
       }
     } catch (e) {
-      console.warn('Supabase Edge Function not reachable. Seamlessly transitioning to local AI fallback graph.', e);
+      console.warn('Supabase Edge Function unavailable. Using OpenAI fallback.', e);
     }
   }
 
-  // 2. Local Fallback Triage & Cautious Medical Triage State Machine
-  // Simulate network delay for a modern SaaS conversational feel
-  await new Promise((resolve) => setTimeout(resolve, 600));
+  // 3. OpenAI GPT-4o-mini (medical-only, real AI)
+  const openAiResponse = await callOpenAI(userInput, history);
+  if (openAiResponse) {
+    // Detect if the response suggests a platform action
+    let suggestedAction: ChatResponse['suggestedAction'] | undefined;
 
-  const text = userInput.toLowerCase().trim();
+    if (openAiResponse.toLowerCase().includes('appointment') || openAiResponse.toLowerCase().includes('book')) {
+      suggestedAction = { type: 'link', label: 'Book Appointment', value: 'book-appointment' };
+    } else if (openAiResponse.toLowerCase().includes('doctor') || openAiResponse.toLowerCase().includes('specialist')) {
+      suggestedAction = { type: 'link', label: 'Find a Doctor', value: 'doctors' };
+    } else if (openAiResponse.toLowerCase().includes('dashboard') || openAiResponse.toLowerCase().includes('report')) {
+      suggestedAction = { type: 'link', label: 'Open Dashboard', value: 'dashboard' };
+    }
 
-  // EMERGENCY CRITICAL SIGNS FILTER
-  // Checks for severe signs: chest pain, breathing difficulty, severe bleeding, stroke, loss of consciousness
-  const hasEmergencySigns = 
-    text.includes('chest pain') || text.includes('chest pressure') || text.includes('crushing chest') ||
-    text.includes('breathing difficulty') || text.includes('shortness of breath') || text.includes('cant breathe') ||
-    text.includes('severe bleeding') || text.includes('bleeding heavily') ||
-    text.includes('stroke') || text.includes('facial droop') || text.includes('speech slurr') ||
-    text.includes('unconscious') || text.includes('passed out') || text.includes('loss of consciousness');
-
-  if (hasEmergencySigns) {
-    return {
-      message: "✦ CRITICAL SAFETY ALERT: The symptoms you described (such as crushing chest pressure, shortness of breath, heavy bleeding, or potential neurological/stroke indicators) suggest a potential life-threatening emergency. \n\n**Please seek immediate emergency medical care: dial emergency services (112 or 911) or proceed to the nearest emergency department immediately. Do not delay care.**",
-      suggestedAction: { type: 'link', label: 'Emergency Support Call', value: 'contact' }
-    };
+    return { message: openAiResponse, suggestedAction };
   }
 
-  // Triage state machine
-  const triageStep = getTriageState(history);
-  if (triageStep > 0) {
-    return handleTriageStep(triageStep, text);
-  }
-
-  // 3. Specific Website Action triggers
-  if (text.includes('check my symptoms') || text === 'symptom_check' || text.includes('triage')) {
-    return {
-      message: "I am starting your interactive AI Symptom Triage. Let's analyze your condition step-by-step. First, what is your primary symptom? (e.g., headache, back pain, fatigue, cough)",
-      suggestedAction: { type: 'prompt', label: 'Check Headache', value: 'Headache' }
-    };
-  }
-
-  if (text.includes('explain my report') || text.includes('explain report') || text.includes('upload pdf') || text.includes('lab report')) {
-    return {
-      message: "To analyze your laboratory blood panels or EHR PDF documents, please go to your User Dashboard and navigate to the Health Reports page to upload the file. I will extract biological indicators and clarify complex metrics in plain language.",
-      suggestedAction: { type: 'link', label: 'Go to Reports Page', value: 'dashboard' }
-    };
-  }
-
-  if (text.includes('find a doctor') || text.includes('doctors') || text.includes('consult')) {
-    return {
-      message: "We have board-certified specialist physicians available for private virtual consultations. You can browse specialized practitioners in cardiology, neurology, oncology, and triage on our Doctors directory.",
-      suggestedAction: { type: 'link', label: 'View Doctors Directory', value: 'doctors' }
-    };
-  }
-
-  if (text.includes('book appointment') || text.includes('schedule') || text.includes('book a call')) {
-    return {
-      message: "To reserve a video consultation slot with one of our clinical specialists, navigate to the Book Appointment page and choose your preferred doctor, date, and slot.",
-      suggestedAction: { type: 'link', label: 'Go to Booking Page', value: 'book-appointment' }
-    };
-  }
-
-  if (text.includes('medicine reminder') || text.includes('reminder') || text.includes('pill') || text.includes('capsule')) {
-    return {
-      message: "To configure medication schedules, pharmacokinetics timers, and capsule reminder logs, visit the Medication Reminders tab inside your User Dashboard.",
-      suggestedAction: { type: 'link', label: 'Open Reminders Dashboard', value: 'dashboard' }
-    };
-  }
-
-  if (text.includes('pricing') || text.includes('plan') || text.includes('subscription') || text.includes('cost')) {
-    return {
-      message: "Medora AI offers premium clinical support tiers: Care Essential (₹999/mo) for base AI features, Care Premium (₹2999/mo) which includes 2 virtual doctor calls, and Care Elite (₹7999/mo) for unlimited consultations and genetic mapping. Review details on our plans page.",
-      suggestedAction: { type: 'link', label: 'View Pricing Plans', value: 'pricing' }
-    };
-  }
-
-  if (text.includes('service') || text.includes('features') || text.includes('longevity') || text.includes('cardiology AI')) {
-    return {
-      message: "Medora AI provides high-end clinical services: 1. Cardiology AI Analytics (remote ECG). 2. Neuro-Cognitive Diagnostics (sleep and brain metrics). 3. Genetic Longevity Profiling. Please visit our Services page to explore features.",
-      suggestedAction: { type: 'link', label: 'Explore Services', value: 'features' }
-    };
-  }
-
-  if (text.includes('health tips') || text.includes('tips') || text.includes('wellness') || text.includes('longevity tips')) {
-    return {
-      message: "For optimal longevity and general wellness: \n1. Aim for 7 to 8 hours of restorative sleep to support cognitive autophagy. \n2. Engage in 150 minutes of zone-2 cardiovascular conditioning weekly. \n3. Sync smart wearables in your Dashboard to monitor heart rate variability (HRV) baselines.",
-      suggestedAction: { type: 'link', label: 'View Wellness Dashboard', value: 'dashboard' }
-    };
-  }
-
-  // 4. Search the Admin Chatbot Knowledge base keywords
+  // 4. Local knowledge base keyword match
   for (const entry of knowledgeBase) {
     if (text.includes(entry.keyword.toLowerCase())) {
       return { message: entry.responseText };
     }
   }
 
-  // 5. Default medical assistant conversational guidelines
-  if (text.includes('hello') || text.includes('hi') || text.includes('hey') || text.includes('who are you')) {
+  // 5. Keyword action triggers (smart local fallback)
+  if (text.includes('check my symptoms') || text.includes('triage') || text.includes('symptom')) {
     return {
-      message: "Hello! ✦ I am the Medora AI Assistant, your digital clinical wellness companion. I can guide symptom triages, explain lab values, summarize health reports, or assist in scheduling consultations. What health metrics or guidelines can I support you with?",
-      suggestedAction: { type: 'prompt', label: 'Check my symptoms', value: 'Check my symptoms' }
+      message: "I'll help you assess your symptoms step-by-step. First, what is your primary symptom? (e.g., headache, chest discomfort, fatigue, cough, fever)",
+      suggestedAction: { type: 'prompt', label: 'Start Symptom Check', value: 'Headache' }
     };
   }
 
-  if (text.includes('thank') || text.includes('helpful') || text.includes('great') || text.includes('appreciate')) {
+  if (text.includes('find a doctor') || text.includes('consult') || text.includes('specialist')) {
     return {
-      message: "You are welcome. Your health data is protected via point-to-point encryption and secure database controls. Let me know if you need any other wellness support."
+      message: "We have 500+ board-certified specialists available for virtual consultations — covering cardiology, neurology, internal medicine, and more. Browse our verified doctors directory.",
+      suggestedAction: { type: 'link', label: 'View Doctors', value: 'doctors' }
     };
   }
 
-  // Cautious general fallback medical disclaimer statement
+  if (text.includes('book appointment') || text.includes('schedule')) {
+    return {
+      message: "You can reserve a video consultation with one of our specialists in minutes. Choose your doctor, preferred date, and time slot.",
+      suggestedAction: { type: 'link', label: 'Book Now', value: 'book-appointment' }
+    };
+  }
+
+  if (text.includes('pricing') || text.includes('plan') || text.includes('cost') || text.includes('subscription')) {
+    return {
+      message: "Medora AI offers three care tiers: Care Essential (₹999/mo), Care Premium (₹2,999/mo with 2 virtual consultations), and Care Elite (₹7,999/mo with unlimited consultations + genetic profiling). View full details on our pricing page.",
+      suggestedAction: { type: 'link', label: 'View Pricing', value: 'pricing' }
+    };
+  }
+
+  if (text.includes('hello') || text.includes('hi') || text.includes('hey')) {
+    return {
+      message: "Hello! 👋 I'm your Medora AI medical assistant — powered by GPT-4 and restricted exclusively to health and medical guidance.\n\nI can help you:\n• Check symptoms & get health guidance\n• Understand lab reports & medical terms\n• Find the right specialist\n• Book consultations\n• Answer general wellness questions\n\nHow can I help your health today?",
+      suggestedAction: { type: 'prompt', label: 'Check Symptoms', value: 'Check my symptoms' }
+    };
+  }
+
+  // 6. Non-medical topic detected
+  if (isLikelyNonMedical(text)) {
+    return {
+      message: "I'm your dedicated medical AI assistant. I can only help with health and medical questions. Is there anything about your health, symptoms, or wellness I can assist with?"
+    };
+  }
+
+  // 7. Default medical fallback
   return {
-    message: "I have noted your inquiry. As the Medora AI Assistant, I provide general educational and wellness guidance only. I do not diagnose clinical conditions or replace licensed physician care. If your symptoms are persistent or concerning, I strongly advise reserving a detailed consultation with one of our verified general practitioners or specialists.",
-    suggestedAction: { type: 'link', label: 'Consult Certified Physician', value: 'doctors' }
+    message: "I've noted your question. As Medora AI, I provide evidence-based health education and wellness guidance only — I don't diagnose clinical conditions or replace physician care.\n\nFor persistent or concerning symptoms, I recommend booking a consultation with one of our verified specialists for a proper clinical assessment.",
+    suggestedAction: { type: 'link', label: 'Consult a Specialist', value: 'doctors' }
   };
-};
-
-// =====================================================================
-// TRIAGE CONVERSATION HISTORY LOG TRAVERSER
-// =====================================================================
-
-const getTriageState = (history: { sender: 'user' | 'ai'; message: string }[]): number => {
-  for (let i = history.length - 1; i >= 0; i--) {
-    const msg = history[i].message;
-    if (msg.includes("what is your primary symptom?")) {
-      return 1; // User just answered symptom
-    }
-    if (msg.includes("how long have you experienced this?")) {
-      return 2; // User just answered duration
-    }
-    if (msg.includes("do you have any associated warning flags")) {
-      return 3; // User just answered associated warnings
-    }
-  }
-  return 0;
-};
-
-const handleTriageStep = (step: number, answer: string): ChatResponse => {
-  if (step === 1) {
-    return {
-      message: `Thank you. I have recorded your primary symptom: "${answer}". To help compile your diagnostic details, how long have you experienced this? (e.g., since this morning, 3 days, over a week)`,
-      suggestedAction: { type: 'prompt', label: 'Since today', value: 'Since this morning' }
-    };
-  }
-  if (step === 2) {
-    return {
-      message: `Recorded duration: "${answer}". Almost complete. Do you have any associated warning flags like active fever, shortness of breath, sudden dizziness, or vomiting? (Yes / No)`,
-      suggestedAction: { type: 'prompt', label: 'No, none', value: 'No' }
-    };
-  }
-  if (step === 3) {
-    const isSevere = answer.includes('yes') || answer.includes('fever') || answer.includes('short') || answer.includes('dizzy') || answer.includes('vomit');
-    if (isSevere) {
-      return {
-        message: "✦ Medora AI Triage Report: [WARNING - ORANGE TIER]\nYour inputs show potential signs of systemic distress. I recommend scheduling an virtual consultation today. I suggest consulting Dr. Sarah Jenkins (Internal Medicine & Triage) for an expedited clinical assessment.",
-        suggestedAction: { type: 'link', label: 'Consult Dr. Sarah Jenkins', value: 'doctors' }
-      };
-    } else {
-      return {
-        message: "✦ Medora AI Triage Report: [OBSERVE - GREEN TIER]\nNo severe clinical warning flags identified. Recommended general guidance: Rest, optimal hydration, and avoid excessive physical exertion. If these symptoms continue for more than 48 hours, proceed to schedule a consultation with our primary care team.",
-        suggestedAction: { type: 'link', label: 'View Health Dashboard', value: 'dashboard' }
-      };
-    }
-  }
-  return { message: "Triage assessment completed." };
 };
