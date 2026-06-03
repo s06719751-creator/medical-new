@@ -70,7 +70,11 @@ const callOpenAI = async (
   messages.push({ role: 'user', content: userMessage });
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      signal: controller.signal,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -85,6 +89,7 @@ const callOpenAI = async (
         frequency_penalty: 0.1
       })
     });
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       console.error('OpenAI API error:', response.status, await response.text());
@@ -138,7 +143,11 @@ export const getChatbotResponse = async (
   // 2. Try Supabase Edge Function first (production-grade, no key exposure)
   if (supabase) {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+
       const { data, error } = await supabase.functions.invoke('medora-chatbot', {
+        signal: controller.signal,
         body: {
           message: userInput,
           history: history.map(h => ({
@@ -147,6 +156,7 @@ export const getChatbotResponse = async (
           }))
         }
       });
+      clearTimeout(timeoutId);
       if (!error && data) {
         return data as ChatResponse;
       }

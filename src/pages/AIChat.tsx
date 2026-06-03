@@ -22,7 +22,7 @@ export const AIChat: React.FC = () => {
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
 
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const activeUserId = user ? user.id : 'guest_session';
   const [sessionId] = useState<string>(() => 'sess_' + Math.random().toString(36).substring(2, 9));
 
@@ -41,7 +41,12 @@ export const AIChat: React.FC = () => {
   }, [activeUserId]);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   }, [localHistory, isTyping]);
 
   const handleSendMessage = async (textToSend: string) => {
@@ -179,7 +184,7 @@ export const AIChat: React.FC = () => {
           </div>
 
           {/* Messages Stream area */}
-          <div className="flex-grow overflow-y-auto p-6 flex flex-col gap-5 bg-teal-50/20">
+          <div ref={chatContainerRef} className="flex-grow overflow-y-auto p-6 flex flex-col gap-5 bg-teal-50/20">
             
             {localHistory.map((msg) => (
               <div key={msg.id} className={`flex gap-3 max-w-[85%] ${msg.sender === 'user' ? 'self-end flex-row-reverse' : 'self-start'}`}>
@@ -225,7 +230,7 @@ export const AIChat: React.FC = () => {
               </div>
             )}
 
-            <div ref={chatEndRef} />
+            {/* End indicator ref removed to prevent full page scroll */}
           </div>
 
           {/* Quick clinical triage suggestions */}

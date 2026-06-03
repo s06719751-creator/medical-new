@@ -22,7 +22,7 @@ export const FloatingChat: React.FC<FloatingChatProps> = ({ onNavigate }) => {
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
 
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const activeUserId = user ? user.id : 'guest_session';
   const [sessionId] = useState<string>(() => 'sess_' + Math.random().toString(36).substring(2, 9));
 
@@ -41,7 +41,12 @@ export const FloatingChat: React.FC<FloatingChatProps> = ({ onNavigate }) => {
   }, [activeUserId, isOpen]);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   }, [localHistory, isTyping]);
 
   const handleSendMessage = async (textToSend: string) => {
@@ -136,7 +141,7 @@ export const FloatingChat: React.FC<FloatingChatProps> = ({ onNavigate }) => {
           </div>
 
           {/* Messages */}
-          <div className="flex-grow overflow-y-auto p-4 flex flex-col gap-4 bg-slate-50/50">
+          <div ref={chatContainerRef} className="flex-grow overflow-y-auto p-4 flex flex-col gap-4 bg-slate-50/50">
             {localHistory.map((msg) => (
               <div key={msg.id} className={`flex gap-2.5 max-w-[88%] ${msg.sender === 'user' ? 'self-end flex-row-reverse' : 'self-start'}`}>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center border shrink-0 ${
@@ -180,7 +185,7 @@ export const FloatingChat: React.FC<FloatingChatProps> = ({ onNavigate }) => {
             )}
 
             {errorMsg && <p className="text-rose-500 text-[10px] font-mono text-center">✕ {errorMsg}</p>}
-            <div ref={chatEndRef} />
+            {/* End indicator ref removed to prevent full page scroll */}
           </div>
 
           {/* Quick Prompts */}
