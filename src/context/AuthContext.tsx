@@ -263,8 +263,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       localStorage.removeItem('medora_active_session');
     } else if (supabase) {
-      await supabase.auth.signOut();
-      setUser(null);
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.warn('Supabase signOut error, forcing local signOut:', err);
+      } finally {
+        setUser(null);
+      }
     }
   };
 
