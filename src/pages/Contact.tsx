@@ -141,7 +141,7 @@ export const Contact: React.FC = () => {
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     placeholder="Evelyn Vance"
-                    className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-500/50"
+                    className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-500 focus:outline-none focus:border-purple-500/50"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -152,7 +152,7 @@ export const Contact: React.FC = () => {
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     placeholder="evelyn@domain.com"
-                    className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-500/50"
+                    className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-500 focus:outline-none focus:border-purple-500/50"
                   />
                 </div>
               </div>
@@ -165,7 +165,7 @@ export const Contact: React.FC = () => {
                   value={form.message}
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
                   placeholder="Details of your symptom checking experience, billing issue, or physician matching parameters..."
-                  className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-500/50 resize-none"
+                  className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-500 focus:outline-none focus:border-purple-500/50 resize-none"
                 />
               </div>
 

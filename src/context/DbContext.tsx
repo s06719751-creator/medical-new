@@ -253,6 +253,7 @@ export const DbProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   const [contactMessages, setContactMessages] = useState<ContactMessage[]>([]);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [knowledge, setKnowledge] = useState<ChatbotKnowledge[]>(DEFAULT_KNOWLEDGE);
+  const [knowledgeSchema, setKnowledgeSchema] = useState<'legacy' | 'complete'>('complete');
 
   const fetchFromSupabase = async () => {
     if (!supabase) return;
@@ -308,7 +309,18 @@ export const DbProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       if (faqData) setFaqs(faqData);
 
       const { data: kData } = await supabase.from('chatbot_knowledge').select('*');
-      if (kData) setKnowledge(kData.map((k: any) => ({ id: k.id, keyword: k.keyword, responseText: k.response_text })));
+      if (kData) {
+        if (kData.length > 0 && 'keyword' in kData[0]) {
+          setKnowledgeSchema('legacy');
+        } else {
+          setKnowledgeSchema('complete');
+        }
+        setKnowledge(kData.map((k: any) => ({
+          id: k.id,
+          keyword: k.keyword || k.title || '',
+          responseText: k.response_text || k.content || ''
+        })));
+      }
 
       // Load appointments & contact requests if logged-in auth user is admin
       const { data: userData } = await supabase.auth.getUser();
@@ -946,11 +958,15 @@ export const DbProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
     if (!supabase) return false;
     try {
-      const payload = {
-        id: entry.id,
-        keyword: entry.keyword?.toLowerCase(),
-        response_text: entry.responseText
-      };
+      const payload: any = { id: entry.id };
+      if (knowledgeSchema === 'legacy') {
+        payload.keyword = entry.keyword?.toLowerCase();
+        payload.response_text = entry.responseText;
+      } else {
+        payload.title = entry.keyword;
+        payload.content = entry.responseText;
+        payload.is_active = true;
+      }
       const { error } = await supabase.from('chatbot_knowledge').upsert(payload);
       return !error;
     } catch (err) {

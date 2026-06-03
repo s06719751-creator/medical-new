@@ -174,8 +174,8 @@ export const getChatbotResponse = async (
 
   // 4. Local knowledge base keyword match
   for (const entry of knowledgeBase) {
-    if (text.includes(entry.keyword.toLowerCase())) {
-      return { message: entry.responseText };
+    if (entry.keyword && text.includes(entry.keyword.toLowerCase())) {
+      return { message: entry.responseText || '' };
     }
   }
 
