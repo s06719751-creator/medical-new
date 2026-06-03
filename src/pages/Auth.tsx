@@ -8,7 +8,7 @@ interface AuthProps {
 }
 
 export const Auth: React.FC<AuthProps> = ({ onSuccess }) => {
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, isDemo } = useAuth();
   
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -62,7 +62,7 @@ export const Auth: React.FC<AuthProps> = ({ onSuccess }) => {
     setError('');
     
     const testEmail = role === 'admin' ? 'admin@medora.ai' : 'patient@medora.ai';
-    const testPass = role === 'admin' ? 'admin' : 'patient';
+    const testPass = role === 'admin' ? (isDemo ? 'admin' : 'adminPassword123') : 'patient';
     
     try {
       const res = await signIn(testEmail, testPass);

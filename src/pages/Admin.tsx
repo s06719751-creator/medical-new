@@ -4,14 +4,14 @@ import { useAuth } from '../context/AuthContext';
 import { useDb } from '../context/DbContext';
 import { supabase } from '../services/supabase';
 import { GlowingCard } from '../components/GlowingCard';
-import type { 
+import type {
   Doctor, BlogPost, FAQ, ChatbotKnowledge, Feature, PricingPlan
 } from '../context/DbContext';
-import { 
-  ShieldCheck, ShieldAlert, Settings, Users, Calendar, BookOpen, HelpCircle, 
-  Plus, Trash2, Edit2, Check, X, Mail, Activity, Layout, Sliders, 
-  Stethoscope, CreditCard, MessageSquare, Bot, Image, Search, Filter, 
-  Loader2, LogOut, Copy, ExternalLink, AlertCircle, CheckCircle, AlertTriangle 
+import {
+  ShieldCheck, ShieldAlert, Settings, Users, Calendar, BookOpen, HelpCircle,
+  Plus, Trash2, Edit2, Check, X, Mail, Activity, Layout, Sliders,
+  Stethoscope, CreditCard, MessageSquare, Bot, Image, Search, Filter,
+  Loader2, LogOut, Copy, ExternalLink, AlertCircle, CheckCircle, AlertTriangle
 } from 'lucide-react';
 
 interface Toast {
@@ -22,7 +22,7 @@ interface Toast {
 
 export const Admin: React.FC = () => {
   const { user, signIn, signOut } = useAuth();
-  const { 
+  const {
     isDemo, settings, updateSettings, doctors, upsertDoctor, deleteDoctor,
     features, upsertFeature, deleteFeature, plans, upsertPlan, deletePlan,
     appointments, updateAppointmentStatus, contactMessages, markContactMessageRead, deleteContactMessage,
@@ -31,7 +31,7 @@ export const Admin: React.FC = () => {
 
   // SaaS Navigation controller
   const [activeTab, setActiveTab] = useState<string>('overview');
-  
+
   // Custom Local State for non-core Supabase synced tables (Services, Testimonials, Media bucket, Audits)
   const [servicesList, setServicesList] = useState<any[]>([]);
   const [testimonialsList, setTestimonialsList] = useState<any[]>([]);
@@ -187,7 +187,7 @@ export const Admin: React.FC = () => {
       } else if (targetField === 'testimonial' && editingTestimonial) {
         setEditingTestimonial({ ...editingTestimonial, imageUrl: finalUrl });
       }
-      
+
       // Refresh media assets list if media tab is active
       if (activeTab === 'media') {
         fetchLocalTabRecords('media');
@@ -354,7 +354,7 @@ export const Admin: React.FC = () => {
     { id: 'overview', name: 'Dashboard', icon: Activity, group: 'Core' },
     { id: 'appointments', name: 'Appointments', icon: Calendar, group: 'Operations' },
     { id: 'contacts', name: 'Contact Inquiries', icon: Mail, group: 'Operations' },
-    
+
     { id: 'website_content', name: 'Website Content', icon: Layout, group: 'Content' },
     { id: 'features', name: 'Features Manager', icon: Sliders, group: 'Content' },
     { id: 'services', name: 'Services Manager', icon: Stethoscope, group: 'Content' },
@@ -363,7 +363,7 @@ export const Admin: React.FC = () => {
     { id: 'pricing', name: 'Pricing Manager', icon: CreditCard, group: 'Content' },
     { id: 'faqs', name: 'FAQ Manager', icon: HelpCircle, group: 'Content' },
     { id: 'testimonials', name: 'Testimonials', icon: MessageSquare, group: 'Content' },
-    
+
     { id: 'chatbot', name: 'Chatbot Manager', icon: Bot, group: 'System' },
     { id: 'media', name: 'Media Library', icon: Image, group: 'System' },
     { id: 'settings', name: 'System Settings', icon: Settings, group: 'System' },
@@ -374,7 +374,7 @@ export const Admin: React.FC = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8 text-left animate-[fadeIn_0.5s_ease-out]">
-      
+
       {/* Top Navigation Bar with Profile */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 border-b border-white/5 pb-5 z-20 relative">
         <div className="flex items-center gap-3">
@@ -397,9 +397,9 @@ export const Admin: React.FC = () => {
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/5 bg-white/5 shadow-sm">
-            <img 
-              src={user.avatarUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=admin'} 
-              alt="avatar" 
+            <img
+              src={user.avatarUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=admin'}
+              alt="avatar"
               className="w-6 h-6 rounded-full border border-purple-500/30 object-cover"
             />
             <div className="flex flex-col">
@@ -407,7 +407,7 @@ export const Admin: React.FC = () => {
               <span className="text-[8px] text-slate-500 font-mono tracking-widest leading-none uppercase mt-0.5">{user.role}</span>
             </div>
           </div>
-          <button 
+          <button
             onClick={signOut}
             className="p-2.5 rounded-xl border border-rose-500/20 text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer shadow-md"
             title="Log Out"
@@ -419,7 +419,7 @@ export const Admin: React.FC = () => {
 
       {/* Main SaaS Sidebar Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
-        
+
         {/* SIDEBAR */}
         <div className="lg:col-span-3 flex flex-col gap-5 p-4 rounded-2xl glass-panel border-white/5">
           {groups.map(group => (
@@ -435,11 +435,10 @@ export const Admin: React.FC = () => {
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2.5 font-mono cursor-pointer ${
-                          isActive 
-                            ? 'text-purple-400 bg-purple-500/10 font-bold border-l-2 border-purple-500 shadow-sm shadow-purple-500/5' 
+                        className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2.5 font-mono cursor-pointer ${isActive
+                            ? 'text-purple-400 bg-purple-500/10 font-bold border-l-2 border-purple-500 shadow-sm shadow-purple-500/5'
                             : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                        }`}
+                          }`}
                       >
                         <IconComp className={`w-4 h-4 ${isActive ? 'text-purple-400' : 'text-slate-500'}`} />
                         {tab.name}
@@ -453,7 +452,7 @@ export const Admin: React.FC = () => {
 
         {/* WORKSPACE AREA */}
         <div className="lg:col-span-9 space-y-6">
-          
+
           {/* =================================================================== */}
           {/* TAB 1: DASHBOARD TELEMETRY */}
           {/* =================================================================== */}
@@ -482,7 +481,7 @@ export const Admin: React.FC = () => {
 
               {/* Grid with Recent Appointments, Messages & Audits */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
+
                 {/* Recent Bookings Panel */}
                 <GlowingCard glowColor="none" className="p-5 border-white/5">
                   <div className="flex justify-between items-center mb-4">
@@ -498,11 +497,10 @@ export const Admin: React.FC = () => {
                           <p className="font-bold text-slate-200">{appt.userName}</p>
                           <p className="text-[10px] text-slate-400 mt-0.5">{appt.date} at {appt.time}</p>
                         </div>
-                        <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
-                          appt.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                          appt.status === 'pending' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
-                          'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                        }`}>
+                        <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${appt.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                            appt.status === 'pending' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+                              'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                          }`}>
                           {appt.status}
                         </span>
                       </div>
@@ -578,57 +576,57 @@ export const Admin: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-2">
                     <label className="text-slate-400 font-mono text-[9px] uppercase">Hero Title</label>
-                    <input 
-                      type="text" 
-                      value={settings.heroTitle || ''} 
+                    <input
+                      type="text"
+                      value={settings.heroTitle || ''}
                       onChange={(e) => updateSettings({ heroTitle: e.target.value })}
-                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
                     <label className="text-slate-400 font-mono text-[9px] uppercase">Hero Badge / Highlight Text</label>
-                    <input 
-                      type="text" 
-                      value={settings.logoText || ''} 
+                    <input
+                      type="text"
+                      value={settings.logoText || ''}
                       onChange={(e) => updateSettings({ logoText: e.target.value })}
-                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                     />
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-2">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Hero Subtitle</label>
-                  <textarea 
-                    value={settings.heroSubtitle || ''} 
+                  <textarea
+                    value={settings.heroSubtitle || ''}
                     onChange={(e) => updateSettings({ heroSubtitle: e.target.value })}
                     rows={3}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="flex flex-col gap-2">
                     <label className="text-slate-400 font-mono text-[9px] uppercase">Primary CTA Text</label>
-                    <input 
-                      type="text" 
-                      value={settings.heroCtaText || ''} 
+                    <input
+                      type="text"
+                      value={settings.heroCtaText || ''}
                       onChange={(e) => updateSettings({ heroCtaText: e.target.value })}
-                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
                     <label className="text-slate-400 font-mono text-[9px] uppercase">SEO Meta Title</label>
-                    <input 
-                      type="text" 
-                      value={settings.seoTitle || ''} 
+                    <input
+                      type="text"
+                      value={settings.seoTitle || ''}
                       onChange={(e) => updateSettings({ seoTitle: e.target.value })}
-                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
                     <label className="text-slate-400 font-mono text-[9px] uppercase">Theme Accent Code</label>
                     <select
-                      value={settings.themeColor || 'purple'} 
+                      value={settings.themeColor || 'purple'}
                       onChange={(e) => updateSettings({ themeColor: e.target.value })}
                       className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                     >
@@ -641,17 +639,17 @@ export const Admin: React.FC = () => {
 
                 <div className="flex flex-col gap-2">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">SEO Meta Description</label>
-                  <textarea 
-                    value={settings.seoDescription || ''} 
+                  <textarea
+                    value={settings.seoDescription || ''}
                     onChange={(e) => updateSettings({ seoDescription: e.target.value })}
                     rows={2}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                   />
                 </div>
 
                 <div className="flex justify-end mt-4 pt-2">
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 font-bold transition-all text-xs font-mono uppercase tracking-widest cursor-pointer shadow-md"
                   >
                     Save Changes
@@ -669,15 +667,15 @@ export const Admin: React.FC = () => {
               <div className="flex justify-between items-center">
                 <div className="relative w-64">
                   <Search className="w-4 h-4 text-slate-500 absolute left-3 top-3.5" />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Search features..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-white/5 bg-white/5 text-xs text-slate-200 outline-none"
                   />
                 </div>
-                <button 
+                <button
                   onClick={() => setEditingFeature({})}
                   className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-xs font-bold font-mono uppercase flex items-center gap-1.5 cursor-pointer shadow-md"
                 >
@@ -707,13 +705,13 @@ export const Admin: React.FC = () => {
                           <td className="p-4 text-slate-400 max-w-xs truncate">{f.description}</td>
                           <td className="p-4 font-mono text-[10px] text-purple-400">{f.iconName}</td>
                           <td className="p-4 text-right space-x-2">
-                            <button 
+                            <button
                               onClick={() => setEditingFeature(f)}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
-                            <button 
+                            <button
                               onClick={() => setDeleteConfirm({ type: 'feature', id: f.id, name: f.title })}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-rose-400 hover:bg-rose-500/10 cursor-pointer"
                             >
@@ -741,15 +739,15 @@ export const Admin: React.FC = () => {
               <div className="flex justify-between items-center">
                 <div className="relative w-64">
                   <Search className="w-4 h-4 text-slate-500 absolute left-3 top-3.5" />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Search services..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-white/5 bg-white/5 text-xs text-slate-200 outline-none"
                   />
                 </div>
-                <button 
+                <button
                   onClick={() => setEditingService({})}
                   className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-xs font-bold font-mono uppercase flex items-center gap-1.5 cursor-pointer shadow-md"
                 >
@@ -780,20 +778,19 @@ export const Admin: React.FC = () => {
                           <td className="p-4 text-slate-400 max-w-xs truncate">{s.description}</td>
                           <td className="p-4 font-mono text-[10px] text-purple-400">{s.icon || 'Heart'}</td>
                           <td className="p-4">
-                            <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
-                              s.isActive ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-500/10 text-slate-500 border border-slate-500/20'
-                            }`}>
+                            <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${s.isActive ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-500/10 text-slate-500 border border-slate-500/20'
+                              }`}>
                               {s.isActive ? 'active' : 'inactive'}
                             </span>
                           </td>
                           <td className="p-4 text-right space-x-2">
-                            <button 
+                            <button
                               onClick={() => setEditingService(s)}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
-                            <button 
+                            <button
                               onClick={() => setDeleteConfirm({ type: 'service', id: s.id, name: s.title })}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-rose-400 hover:bg-rose-500/10 cursor-pointer"
                             >
@@ -821,15 +818,15 @@ export const Admin: React.FC = () => {
               <div className="flex justify-between items-center">
                 <div className="relative w-64">
                   <Search className="w-4 h-4 text-slate-500 absolute left-3 top-3.5" />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Search doctors..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-white/5 bg-white/5 text-xs text-slate-200 outline-none"
                   />
                 </div>
-                <button 
+                <button
                   onClick={() => setEditingDoc({})}
                   className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-xs font-bold font-mono uppercase flex items-center gap-1.5 cursor-pointer shadow-md"
                 >
@@ -865,20 +862,19 @@ export const Admin: React.FC = () => {
                           <td className="p-4 font-mono font-bold text-white">₹{d.consultationFee}</td>
                           <td className="p-4 font-mono text-amber-400">★ {d.rating}</td>
                           <td className="p-4">
-                            <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
-                              d.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-500/10 text-slate-500 border border-slate-500/20'
-                            }`}>
+                            <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${d.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-500/10 text-slate-500 border border-slate-500/20'
+                              }`}>
                               {d.status}
                             </span>
                           </td>
                           <td className="p-4 text-right space-x-2">
-                            <button 
+                            <button
                               onClick={() => setEditingDoc(d)}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
-                            <button 
+                            <button
                               onClick={() => setDeleteConfirm({ type: 'doctor', id: d.id, name: d.name })}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-rose-400 hover:bg-rose-500/10 cursor-pointer"
                             >
@@ -906,15 +902,15 @@ export const Admin: React.FC = () => {
               <div className="flex justify-between items-center">
                 <div className="relative w-64">
                   <Search className="w-4 h-4 text-slate-500 absolute left-3 top-3.5" />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Search blogs..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-white/5 bg-white/5 text-xs text-slate-200 outline-none"
                   />
                 </div>
-                <button 
+                <button
                   onClick={() => setEditingBlog({})}
                   className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-xs font-bold font-mono uppercase flex items-center gap-1.5 cursor-pointer shadow-md"
                 >
@@ -940,25 +936,24 @@ export const Admin: React.FC = () => {
                       .map(b => (
                         <tr key={b.id} className="hover:bg-white/5 transition-colors">
                           <td className="p-4">
-                            <img src={b.coverImage || 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=80' } alt="cover" className="w-12 h-8 rounded-lg border border-white/5 object-cover" />
+                            <img src={b.coverImage || 'https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=80'} alt="cover" className="w-12 h-8 rounded-lg border border-white/5 object-cover" />
                           </td>
                           <td className="p-4 font-bold text-white max-w-xs truncate">{b.title}</td>
                           <td className="p-4 text-slate-300">{b.authorName}</td>
                           <td className="p-4">
-                            <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
-                              b.status === 'published' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-500/10 text-slate-500 border border-slate-500/20'
-                            }`}>
+                            <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${b.status === 'published' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-500/10 text-slate-500 border border-slate-500/20'
+                              }`}>
                               {b.status}
                             </span>
                           </td>
                           <td className="p-4 text-right space-x-2">
-                            <button 
+                            <button
                               onClick={() => setEditingBlog(b)}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
-                            <button 
+                            <button
                               onClick={() => setDeleteConfirm({ type: 'blog', id: b.id, name: b.title })}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-rose-400 hover:bg-rose-500/10 cursor-pointer"
                             >
@@ -985,7 +980,7 @@ export const Admin: React.FC = () => {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h3 className="text-xs font-bold text-slate-200 font-mono tracking-widest uppercase">Pricing Tier Matrix</h3>
-                <button 
+                <button
                   onClick={() => setEditingPlan({})}
                   className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-xs font-bold font-mono uppercase flex items-center gap-1.5 cursor-pointer shadow-md"
                 >
@@ -1026,13 +1021,13 @@ export const Admin: React.FC = () => {
                           </td>
                           <td className="p-4 font-mono text-purple-400 font-bold">{p.features.length} features</td>
                           <td className="p-4 text-right space-x-2">
-                            <button 
+                            <button
                               onClick={() => setEditingPlan(p)}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
-                            <button 
+                            <button
                               onClick={() => setDeleteConfirm({ type: 'plan', id: p.id, name: p.name })}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-rose-400 hover:bg-rose-500/10 cursor-pointer"
                             >
@@ -1060,15 +1055,15 @@ export const Admin: React.FC = () => {
               <div className="flex justify-between items-center">
                 <div className="relative w-64">
                   <Search className="w-4 h-4 text-slate-500 absolute left-3 top-3.5" />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Search FAQs..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-white/5 bg-white/5 text-xs text-slate-200 outline-none"
                   />
                 </div>
-                <button 
+                <button
                   onClick={() => setEditingFAQ({})}
                   className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-xs font-bold font-mono uppercase flex items-center gap-1.5 cursor-pointer shadow-md"
                 >
@@ -1096,13 +1091,13 @@ export const Admin: React.FC = () => {
                           <td className="p-4 font-bold text-white max-w-xs truncate">{f.question}</td>
                           <td className="p-4 text-slate-400 max-w-md truncate">{f.answer}</td>
                           <td className="p-4 text-right space-x-2">
-                            <button 
+                            <button
                               onClick={() => setEditingFAQ(f)}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
-                            <button 
+                            <button
                               onClick={() => setDeleteConfirm({ type: 'faq', id: f.id, name: f.question })}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-rose-400 hover:bg-rose-500/10 cursor-pointer"
                             >
@@ -1129,7 +1124,7 @@ export const Admin: React.FC = () => {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h3 className="text-xs font-bold text-slate-200 font-mono tracking-widest uppercase">Efficacy Reviews</h3>
-                <button 
+                <button
                   onClick={() => setEditingTestimonial({})}
                   className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-xs font-bold font-mono uppercase flex items-center gap-1.5 cursor-pointer shadow-md"
                 >
@@ -1161,13 +1156,13 @@ export const Admin: React.FC = () => {
                           <td className="p-4 text-slate-400 max-w-sm truncate">{t.message}</td>
                           <td className="p-4 font-mono text-amber-400">★ {t.rating}</td>
                           <td className="p-4 text-right space-x-2">
-                            <button 
+                            <button
                               onClick={() => setEditingTestimonial(t)}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
-                            <button 
+                            <button
                               onClick={() => setDeleteConfirm({ type: 'testimonial', id: t.id, name: t.name })}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-rose-400 hover:bg-rose-500/10 cursor-pointer"
                             >
@@ -1195,8 +1190,8 @@ export const Admin: React.FC = () => {
               <div className="flex justify-between items-center gap-4">
                 <div className="relative w-64">
                   <Search className="w-4 h-4 text-slate-500 absolute left-3 top-3.5" />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Search patients..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -1205,7 +1200,7 @@ export const Admin: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Filter className="w-4 h-4 text-slate-500" />
-                  <select 
+                  <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
                     className="rounded-xl border border-white/5 bg-white/5 px-3 py-2.5 text-xs text-slate-300 outline-none cursor-pointer"
@@ -1254,18 +1249,17 @@ export const Admin: React.FC = () => {
                           </td>
                           <td className="p-4 text-slate-400 max-w-xs truncate">{appt.notes || 'No reason provided.'}</td>
                           <td className="p-4">
-                            <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
-                              appt.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                              appt.status === 'pending' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
-                              'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                            }`}>
+                            <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${appt.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                                appt.status === 'pending' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+                                  'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                              }`}>
                               {appt.status}
                             </span>
                           </td>
                           <td className="p-4 text-right space-x-2 whitespace-nowrap">
                             {appt.status === 'pending' && (
                               <>
-                                <button 
+                                <button
                                   onClick={async () => {
                                     await updateAppointmentStatus(appt.id, 'confirmed');
                                     showToast('Appointment approved successfully');
@@ -1275,7 +1269,7 @@ export const Admin: React.FC = () => {
                                 >
                                   <Check className="w-3.5 h-3.5" />
                                 </button>
-                                <button 
+                                <button
                                   onClick={async () => {
                                     await updateAppointmentStatus(appt.id, 'cancelled');
                                     showToast('Appointment marked as cancelled');
@@ -1324,7 +1318,7 @@ export const Admin: React.FC = () => {
                 <h3 className="text-xs font-bold text-slate-200 font-mono tracking-widest uppercase">Inbox Messages</h3>
                 <div className="flex items-center gap-2">
                   <Filter className="w-4 h-4 text-slate-500" />
-                  <select 
+                  <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
                     className="rounded-xl border border-white/5 bg-white/5 px-3 py-2 text-xs text-slate-300 outline-none cursor-pointer"
@@ -1365,15 +1359,14 @@ export const Admin: React.FC = () => {
                           <td className="p-4 text-slate-300 max-w-sm whitespace-pre-wrap">{msg.message}</td>
                           <td className="p-4 text-slate-400 italic">{msg.replyNotes || <span className="text-slate-600">None yet</span>}</td>
                           <td className="p-4">
-                            <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
-                              msg.isRead ? 'bg-slate-500/10 text-slate-500 border border-slate-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20 shadow-[0_0_10px_-2px_rgba(168,85,247,0.3)] animate-pulse'
-                            }`}>
+                            <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${msg.isRead ? 'bg-slate-500/10 text-slate-500 border border-slate-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20 shadow-[0_0_10px_-2px_rgba(168,85,247,0.3)] animate-pulse'
+                              }`}>
                               {msg.isRead ? 'read' : 'new'}
                             </span>
                           </td>
                           <td className="p-4 text-right space-x-2 whitespace-nowrap">
                             {!msg.isRead && (
-                              <button 
+                              <button
                                 onClick={async () => {
                                   await markContactMessageRead(msg.id, true);
                                   showToast('Message marked as read');
@@ -1397,7 +1390,7 @@ export const Admin: React.FC = () => {
                             >
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
-                            <button 
+                            <button
                               onClick={() => setDeleteConfirm({ type: 'contact', id: msg.id, name: msg.name })}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-rose-400 hover:bg-rose-500/10 cursor-pointer"
                             >
@@ -1422,24 +1415,24 @@ export const Admin: React.FC = () => {
           {/* =================================================================== */}
           {activeTab === 'chatbot' && (
             <div className="space-y-6">
-              
+
               {/* Chatbot Config Cards */}
               <GlowingCard className="p-5 border-white/5">
                 <h3 className="text-xs font-bold text-slate-200 font-mono tracking-widest uppercase mb-4">Chatbot Configuration</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                   <div className="flex flex-col gap-2">
                     <label className="text-slate-400 font-mono text-[9px] uppercase">AI Assistant Welcome Greeting</label>
-                    <textarea 
+                    <textarea
                       rows={2}
-                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                       defaultValue="Hello! I am the Medora AI Digital Care Assistant. I can assist in symptom assessments, summarize reports, or configure reminders. What guidance can I provide?"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
                     <label className="text-slate-400 font-mono text-[9px] uppercase">Safety Clinical Disclaimer Banner</label>
-                    <textarea 
+                    <textarea
                       rows={2}
-                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                       defaultValue="DISCLAIMER: Cognitive AI guidelines are educational. Dial 911 immediately in severe clinical emergencies."
                     />
                   </div>
@@ -1449,7 +1442,7 @@ export const Admin: React.FC = () => {
               {/* Knowledge Base Keywords Matrix */}
               <div className="flex justify-between items-center">
                 <h3 className="text-xs font-bold text-slate-200 font-mono tracking-widest uppercase">Semantic Knowledge Graph</h3>
-                <button 
+                <button
                   onClick={() => setEditingKnowledge({})}
                   className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-xs font-bold font-mono uppercase flex items-center gap-1.5 cursor-pointer shadow-md"
                 >
@@ -1474,13 +1467,13 @@ export const Admin: React.FC = () => {
                           <td className="p-4 font-mono font-bold text-purple-400">"{k.keyword}"</td>
                           <td className="p-4 text-slate-300 max-w-lg truncate">{k.responseText}</td>
                           <td className="p-4 text-right space-x-2">
-                            <button 
+                            <button
                               onClick={() => setEditingKnowledge(k)}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-purple-400 hover:bg-purple-500/10 cursor-pointer"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>
-                            <button 
+                            <button
                               onClick={() => setDeleteConfirm({ type: 'knowledge', id: k.id, name: k.keyword })}
                               className="p-2 rounded-lg bg-white/5 border border-white/5 text-rose-400 hover:bg-rose-500/10 cursor-pointer"
                             >
@@ -1505,9 +1498,8 @@ export const Admin: React.FC = () => {
                   {chatLogsList.map(log => (
                     <div key={log.id} className="p-3 rounded-xl bg-white/5 border border-white/5 text-xs">
                       <div className="flex justify-between items-start">
-                        <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
-                          log.sender === 'user' ? 'bg-purple-500/15 text-purple-300' : 'bg-cyan-500/15 text-cyan-300'
-                        }`}>
+                        <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${log.sender === 'user' ? 'bg-purple-500/15 text-purple-300' : 'bg-cyan-500/15 text-cyan-300'
+                          }`}>
                           {log.sender}
                         </span>
                         <span className="text-[9px] text-slate-500 font-mono">{new Date(log.created_at || log.createdAt).toLocaleString()}</span>
@@ -1531,14 +1523,14 @@ export const Admin: React.FC = () => {
               <div className="flex justify-between items-center">
                 <h3 className="text-xs font-bold text-slate-200 font-mono tracking-widest uppercase">Registered Media library</h3>
                 <div>
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
                     ref={fileInputRef}
                     onChange={(e) => handleFileUpload(e, 'media')}
-                    className="hidden" 
+                    className="hidden"
                   />
-                  <button 
+                  <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploadingImage}
                     className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-xs font-bold font-mono uppercase flex items-center gap-1.5 cursor-pointer shadow-md disabled:opacity-50"
@@ -1560,15 +1552,15 @@ export const Admin: React.FC = () => {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {mediaAssetsList.map(media => (
                   <div key={media.id} className="glass-panel border-white/5 rounded-2xl overflow-hidden group relative p-3">
-                    <img 
-                      src={media.file_url || media.fileUrl} 
-                      alt="media" 
+                    <img
+                      src={media.file_url || media.fileUrl}
+                      alt="media"
                       className="w-full h-28 object-cover rounded-xl border border-white/5 bg-[#05041a]"
                     />
                     <div className="p-2 text-xs">
                       <p className="font-bold text-slate-200 truncate text-[10px]">{media.file_name || media.fileName}</p>
                       <div className="flex justify-between items-center mt-2.5">
-                        <button 
+                        <button
                           onClick={() => {
                             navigator.clipboard.writeText(media.file_url || media.fileUrl || '');
                             showToast('Asset CDN URL copied to clipboard');
@@ -1578,16 +1570,16 @@ export const Admin: React.FC = () => {
                         >
                           <Copy className="w-3.5 h-3.5" />
                         </button>
-                        <a 
-                          href={media.file_url || media.fileUrl} 
-                          target="_blank" 
-                          rel="noreferrer" 
+                        <a
+                          href={media.file_url || media.fileUrl}
+                          target="_blank"
+                          rel="noreferrer"
                           className="p-1.5 rounded-lg bg-white/5 hover:bg-cyan-500/10 text-cyan-400 transition-colors border border-white/5"
                           title="Open Link"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                         </a>
-                        <button 
+                        <button
                           onClick={() => setDeleteConfirm({ type: 'media', id: media.id, name: media.file_name || media.fileName })}
                           className="p-1.5 rounded-lg bg-white/5 hover:bg-rose-500/10 text-rose-400 transition-colors cursor-pointer border border-white/5"
                           title="Delete File"
@@ -1621,24 +1613,24 @@ export const Admin: React.FC = () => {
                 await updateSettings(settings);
                 showToast('Clinical settings synchronized');
               }} className="space-y-4 text-xs sm:text-sm">
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-2">
                     <label className="text-slate-400 font-mono text-[9px] uppercase">Clinic Brand Name</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={settings.logoText || 'Medora AI'}
                       onChange={(e) => updateSettings({ logoText: e.target.value })}
-                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
                     <label className="text-slate-400 font-mono text-[9px] uppercase">Support Care Email</label>
-                    <input 
-                      type="email" 
+                    <input
+                      type="email"
                       value={settings.contactEmail || ''}
                       onChange={(e) => updateSettings({ contactEmail: e.target.value })}
-                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                     />
                   </div>
                 </div>
@@ -1646,20 +1638,20 @@ export const Admin: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="flex flex-col gap-2">
                     <label className="text-slate-400 font-mono text-[9px] uppercase">Clinical Tele-Support</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={settings.phone || ''}
                       onChange={(e) => updateSettings({ phone: e.target.value })}
-                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
                     <label className="text-slate-400 font-mono text-[9px] uppercase">WhatsApp Business Link</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={settings.whatsapp || ''}
                       onChange={(e) => updateSettings({ whatsapp: e.target.value })}
-                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                      className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
@@ -1677,27 +1669,27 @@ export const Admin: React.FC = () => {
 
                 <div className="flex flex-col gap-2">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Headquarters HQ Address</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={settings.address || ''}
                     onChange={(e) => updateSettings({ address: e.target.value })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                   />
                 </div>
 
                 <div className="flex flex-col gap-2">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Emergency Medical Liability Disclaimer Banner</label>
-                  <textarea 
+                  <textarea
                     value={settings.emergencyNotice || ''}
                     onChange={(e) => updateSettings({ emergencyNotice: e.target.value })}
                     rows={3}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]/90"
                   />
                 </div>
 
                 <div className="flex justify-end mt-4 pt-2">
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 font-bold transition-all text-xs font-mono uppercase tracking-widest cursor-pointer shadow-md"
                   >
                     Save Settings
@@ -1716,13 +1708,12 @@ export const Admin: React.FC = () => {
       {/* =================================================================== */}
       <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-2 max-w-sm pointer-events-none">
         {toasts.map(t => (
-          <div 
-            key={t.id} 
-            className={`p-4 rounded-xl border flex items-center gap-2.5 shadow-xl text-xs font-mono font-bold uppercase transition-all duration-300 pointer-events-auto animate-[slideIn_0.3s_ease-out] ${
-              t.type === 'success' ? 'bg-emerald-950/90 text-emerald-400 border-emerald-500/20' :
-              t.type === 'error' ? 'bg-rose-950/90 text-rose-400 border-rose-500/20' :
-              'bg-blue-950/90 text-blue-400 border-blue-500/20'
-            }`}
+          <div
+            key={t.id}
+            className={`p-4 rounded-xl border flex items-center gap-2.5 shadow-xl text-xs font-mono font-bold uppercase transition-all duration-300 pointer-events-auto animate-[slideIn_0.3s_ease-out] ${t.type === 'success' ? 'bg-emerald-950/90 text-emerald-400 border-emerald-500/20' :
+                t.type === 'error' ? 'bg-rose-950/90 text-rose-400 border-rose-500/20' :
+                  'bg-blue-950/90 text-blue-400 border-blue-500/20'
+              }`}
           >
             {t.type === 'success' ? <CheckCircle className="w-4 h-4 flex-shrink-0" /> : <AlertCircle className="w-4 h-4 flex-shrink-0" />}
             <span>{t.text}</span>
@@ -1744,13 +1735,13 @@ export const Admin: React.FC = () => {
               Are you absolutely certain you want to permanently delete <strong className="text-white">"{deleteConfirm.name}"</strong>? This action will remove the record from public data clusters immediately.
             </p>
             <div className="flex gap-3 mt-6">
-              <button 
+              <button
                 onClick={() => setDeleteConfirm(null)}
                 className="flex-1 py-3 rounded-xl border border-white/5 bg-white/5 text-slate-300 font-bold hover:bg-white/10 transition-colors text-xs font-mono uppercase cursor-pointer"
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={executeDeleteAction}
                 className="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition-all text-xs font-mono uppercase tracking-wider cursor-pointer shadow-lg shadow-rose-600/15"
               >
@@ -1764,7 +1755,7 @@ export const Admin: React.FC = () => {
       {/* =================================================================== */}
       {/* DYNAMIC EDITING DIALOG MODALS FOR CRUD */}
       {/* =================================================================== */}
-      
+
       {/* 1. DOCTOR MODAL */}
       {editingDoc && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[999] flex items-center justify-center p-4 overflow-y-auto">
@@ -1793,22 +1784,22 @@ export const Admin: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Physician Full Name</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     required
-                    value={editingDoc.name || ''} 
+                    value={editingDoc.name || ''}
                     onChange={(e) => setEditingDoc({ ...editingDoc, name: e.target.value })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Specialization / Department</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     required
-                    value={editingDoc.specialization || ''} 
+                    value={editingDoc.specialization || ''}
                     onChange={(e) => setEditingDoc({ ...editingDoc, specialization: e.target.value })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
               </div>
@@ -1816,32 +1807,32 @@ export const Admin: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Years of Experience</label>
-                  <input 
-                    type="text" 
-                    value={editingDoc.experience || ''} 
+                  <input
+                    type="text"
+                    value={editingDoc.experience || ''}
                     onChange={(e) => setEditingDoc({ ...editingDoc, experience: e.target.value })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Consultation Fee (INR)</label>
-                  <input 
-                    type="number" 
-                    value={editingDoc.consultationFee || 0} 
+                  <input
+                    type="number"
+                    value={editingDoc.consultationFee || 0}
                     onChange={(e) => setEditingDoc({ ...editingDoc, consultationFee: Number(e.target.value) })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Rating Index</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     step="0.01"
                     min="0"
                     max="5"
-                    value={editingDoc.rating || 5.0} 
+                    value={editingDoc.rating || 5.0}
                     onChange={(e) => setEditingDoc({ ...editingDoc, rating: Number(e.target.value) })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
               </div>
@@ -1849,21 +1840,21 @@ export const Admin: React.FC = () => {
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Professional Medical Avatar URL</label>
                 <div className="flex gap-2">
-                  <input 
-                    type="text" 
-                    value={editingDoc.imageUrl || ''} 
+                  <input
+                    type="text"
+                    value={editingDoc.imageUrl || ''}
                     onChange={(e) => setEditingDoc({ ...editingDoc, imageUrl: e.target.value })}
                     placeholder="https://"
-                    className="flex-grow rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="flex-grow rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
-                    className="hidden" 
+                    className="hidden"
                     id="doc-avatar-file"
                     onChange={(e) => handleFileUpload(e, 'doctor')}
                   />
-                  <button 
+                  <button
                     type="button"
                     onClick={() => document.getElementById('doc-avatar-file')?.click()}
                     disabled={isUploadingImage}
@@ -1876,9 +1867,9 @@ export const Admin: React.FC = () => {
 
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    checked={editingDoc.status === 'active'} 
+                  <input
+                    type="checkbox"
+                    checked={editingDoc.status === 'active'}
                     onChange={(e) => setEditingDoc({ ...editingDoc, status: e.target.checked ? 'active' : 'inactive' })}
                     className="rounded border-white/10 bg-[#080721] text-purple-500 focus:ring-0 focus:ring-offset-0"
                   />
@@ -1887,15 +1878,15 @@ export const Admin: React.FC = () => {
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setEditingDoc(null)}
                   className="px-5 py-3 rounded-xl border border-white/5 bg-white/5 text-slate-300 hover:bg-white/10 font-bold text-xs font-mono uppercase cursor-pointer"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs font-mono uppercase tracking-widest cursor-pointer shadow-md"
                 >
                   Save Record
@@ -1932,57 +1923,57 @@ export const Admin: React.FC = () => {
             }} className="space-y-4 text-xs sm:text-sm">
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Feature Title</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   required
-                  value={editingFeature.title || ''} 
+                  value={editingFeature.title || ''}
                   onChange={(e) => setEditingFeature({ ...editingFeature, title: e.target.value })}
-                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Description</label>
-                <textarea 
+                <textarea
                   required
-                  value={editingFeature.description || ''} 
+                  value={editingFeature.description || ''}
                   onChange={(e) => setEditingFeature({ ...editingFeature, description: e.target.value })}
                   rows={3}
-                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Lucide Icon Name</label>
-                  <input 
-                    type="text" 
-                    value={editingFeature.iconName || 'BrainCircuit'} 
+                  <input
+                    type="text"
+                    value={editingFeature.iconName || 'BrainCircuit'}
                     onChange={(e) => setEditingFeature({ ...editingFeature, iconName: e.target.value })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Sort Order / Index</label>
-                  <input 
-                    type="number" 
-                    value={editingFeature.sortOrder || 1} 
+                  <input
+                    type="number"
+                    value={editingFeature.sortOrder || 1}
                     onChange={(e) => setEditingFeature({ ...editingFeature, sortOrder: Number(e.target.value) })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setEditingFeature(null)}
                   className="px-5 py-3 rounded-xl border border-white/5 bg-white/5 text-slate-300 hover:bg-white/10 font-bold text-xs font-mono uppercase cursor-pointer"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs font-mono uppercase tracking-widest cursor-pointer shadow-md"
                 >
                   Save Feature
@@ -2021,9 +2012,9 @@ export const Admin: React.FC = () => {
                   sortOrder: editingService.sortOrder || servicesList.length + 1,
                   isActive: editingService.isActive !== undefined ? editingService.isActive : true
                 };
-                updated = [...servicesList, newService].sort((a,b) => a.sortOrder - b.sortOrder);
+                updated = [...servicesList, newService].sort((a, b) => a.sortOrder - b.sortOrder);
                 setServicesList(updated);
-                
+
                 if (isDemo || !supabase) {
                   localStorage.setItem('medora_services', JSON.stringify(updated));
                   ok = true;
@@ -2038,9 +2029,9 @@ export const Admin: React.FC = () => {
                   ok = !error;
                 }
               } else {
-                updated = servicesList.map(s => s.id === editingService.id ? { ...s, ...editingService } : s).sort((a,b) => a.sortOrder - b.sortOrder);
+                updated = servicesList.map(s => s.id === editingService.id ? { ...s, ...editingService } : s).sort((a, b) => a.sortOrder - b.sortOrder);
                 setServicesList(updated);
-                
+
                 if (isDemo || !supabase) {
                   localStorage.setItem('medora_services', JSON.stringify(updated));
                   ok = true;
@@ -2065,52 +2056,52 @@ export const Admin: React.FC = () => {
             }} className="space-y-4 text-xs sm:text-sm">
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Service Title</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   required
-                  value={editingService.title || ''} 
+                  value={editingService.title || ''}
                   onChange={(e) => setEditingService({ ...editingService, title: e.target.value })}
-                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Description</label>
-                <textarea 
+                <textarea
                   required
-                  value={editingService.description || ''} 
+                  value={editingService.description || ''}
                   onChange={(e) => setEditingService({ ...editingService, description: e.target.value })}
                   rows={3}
-                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Icon Trigger</label>
-                  <input 
-                    type="text" 
-                    value={editingService.icon || 'Heart'} 
+                  <input
+                    type="text"
+                    value={editingService.icon || 'Heart'}
                     onChange={(e) => setEditingService({ ...editingService, icon: e.target.value })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Sort Order</label>
-                  <input 
-                    type="number" 
-                    value={editingService.sortOrder || 1} 
+                  <input
+                    type="number"
+                    value={editingService.sortOrder || 1}
                     onChange={(e) => setEditingService({ ...editingService, sortOrder: Number(e.target.value) })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
               </div>
 
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    checked={editingService.isActive !== false} 
+                  <input
+                    type="checkbox"
+                    checked={editingService.isActive !== false}
                     onChange={(e) => setEditingService({ ...editingService, isActive: e.target.checked })}
                     className="rounded border-white/10 bg-[#080721] text-purple-500 focus:ring-0 focus:ring-offset-0"
                   />
@@ -2119,15 +2110,15 @@ export const Admin: React.FC = () => {
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setEditingService(null)}
                   className="px-5 py-3 rounded-xl border border-white/5 bg-white/5 text-slate-300 hover:bg-white/10 font-bold text-xs font-mono uppercase cursor-pointer"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs font-mono uppercase tracking-widest cursor-pointer shadow-md"
                 >
                   Save Service
@@ -2164,52 +2155,52 @@ export const Admin: React.FC = () => {
             }} className="space-y-4 text-xs sm:text-sm">
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Article Title</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   required
-                  value={editingBlog.title || ''} 
+                  value={editingBlog.title || ''}
                   onChange={(e) => {
                     setEditingBlog({ ...editingBlog, title: e.target.value });
                   }}
-                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Excerpt / Summary Description</label>
-                <input 
-                  type="text" 
-                  value={editingBlog.excerpt || ''} 
+                <input
+                  type="text"
+                  value={editingBlog.excerpt || ''}
                   onChange={(e) => setEditingBlog({ ...editingBlog, excerpt: e.target.value })}
-                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Full Clinical Advisory Content</label>
-                <textarea 
+                <textarea
                   required
-                  value={editingBlog.content || ''} 
+                  value={editingBlog.content || ''}
                   onChange={(e) => setEditingBlog({ ...editingBlog, content: e.target.value })}
                   rows={4}
-                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Author Name</label>
-                  <input 
-                    type="text" 
-                    value={editingBlog.authorName || 'Medora Advisory Board'} 
+                  <input
+                    type="text"
+                    value={editingBlog.authorName || 'Medora Advisory Board'}
                     onChange={(e) => setEditingBlog({ ...editingBlog, authorName: e.target.value })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Status Option</label>
                   <select
-                    value={editingBlog.status || 'draft'} 
+                    value={editingBlog.status || 'draft'}
                     onChange={(e) => setEditingBlog({ ...editingBlog, status: e.target.value as 'draft' | 'published' })}
                     className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   >
@@ -2222,21 +2213,21 @@ export const Admin: React.FC = () => {
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Cover Image CDN URL</label>
                 <div className="flex gap-2">
-                  <input 
-                    type="text" 
-                    value={editingBlog.coverImage || ''} 
+                  <input
+                    type="text"
+                    value={editingBlog.coverImage || ''}
                     onChange={(e) => setEditingBlog({ ...editingBlog, coverImage: e.target.value })}
                     placeholder="https://"
-                    className="flex-grow rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="flex-grow rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
-                    className="hidden" 
+                    className="hidden"
                     id="blog-cover-file"
                     onChange={(e) => handleFileUpload(e, 'blog')}
                   />
-                  <button 
+                  <button
                     type="button"
                     onClick={() => document.getElementById('blog-cover-file')?.click()}
                     disabled={isUploadingImage}
@@ -2248,15 +2239,15 @@ export const Admin: React.FC = () => {
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setEditingBlog(null)}
                   className="px-5 py-3 rounded-xl border border-white/5 bg-white/5 text-slate-300 hover:bg-white/10 font-bold text-xs font-mono uppercase cursor-pointer"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs font-mono uppercase tracking-widest cursor-pointer shadow-md"
                 >
                   Save Article
@@ -2294,22 +2285,22 @@ export const Admin: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Plan Name</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     required
-                    value={editingPlan.name || ''} 
+                    value={editingPlan.name || ''}
                     onChange={(e) => setEditingPlan({ ...editingPlan, name: e.target.value })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Pricing Rate (INR)</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     required
-                    value={editingPlan.price || ''} 
+                    value={editingPlan.price || ''}
                     onChange={(e) => setEditingPlan({ ...editingPlan, price: e.target.value })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
               </div>
@@ -2318,7 +2309,7 @@ export const Admin: React.FC = () => {
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Billing Cycle</label>
                   <select
-                    value={editingPlan.period || 'month'} 
+                    value={editingPlan.period || 'month'}
                     onChange={(e) => setEditingPlan({ ...editingPlan, period: e.target.value })}
                     className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   >
@@ -2329,30 +2320,30 @@ export const Admin: React.FC = () => {
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Sorting Position</label>
-                  <input 
-                    type="number" 
-                    value={editingPlan.sortOrder || 1} 
+                  <input
+                    type="number"
+                    value={editingPlan.sortOrder || 1}
                     onChange={(e) => setEditingPlan({ ...editingPlan, sortOrder: Number(e.target.value) })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Plan Action Call CTA</label>
-                <input 
-                  type="text" 
-                  value={editingPlan.ctaText || 'Get Started'} 
+                <input
+                  type="text"
+                  value={editingPlan.ctaText || 'Get Started'}
                   onChange={(e) => setEditingPlan({ ...editingPlan, ctaText: e.target.value })}
-                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                 />
               </div>
 
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    checked={editingPlan.isPopular || false} 
+                  <input
+                    type="checkbox"
+                    checked={editingPlan.isPopular || false}
                     onChange={(e) => setEditingPlan({ ...editingPlan, isPopular: e.target.checked })}
                     className="rounded border-white/10 bg-[#080721] text-purple-500 focus:ring-0 focus:ring-offset-0"
                   />
@@ -2361,15 +2352,15 @@ export const Admin: React.FC = () => {
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setEditingPlan(null)}
                   className="px-5 py-3 rounded-xl border border-white/5 bg-white/5 text-slate-300 hover:bg-white/10 font-bold text-xs font-mono uppercase cursor-pointer"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs font-mono uppercase tracking-widest cursor-pointer shadow-md"
                 >
                   Save Plan
@@ -2406,48 +2397,48 @@ export const Admin: React.FC = () => {
             }} className="space-y-4 text-xs sm:text-sm">
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">FAQ Question</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   required
-                  value={editingFAQ.question || ''} 
+                  value={editingFAQ.question || ''}
                   onChange={(e) => setEditingFAQ({ ...editingFAQ, question: e.target.value })}
-                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">FAQ Answer Guidelines</label>
-                <textarea 
+                <textarea
                   required
-                  value={editingFAQ.answer || ''} 
+                  value={editingFAQ.answer || ''}
                   onChange={(e) => setEditingFAQ({ ...editingFAQ, answer: e.target.value })}
                   rows={4}
-                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Ordering Index</label>
-                  <input 
-                    type="number" 
-                    value={editingFAQ.sortOrder || 1} 
+                  <input
+                    type="number"
+                    value={editingFAQ.sortOrder || 1}
                     onChange={(e) => setEditingFAQ({ ...editingFAQ, sortOrder: Number(e.target.value) })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setEditingFAQ(null)}
                   className="px-5 py-3 rounded-xl border border-white/5 bg-white/5 text-slate-300 hover:bg-white/10 font-bold text-xs font-mono uppercase cursor-pointer"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs font-mono uppercase tracking-widest cursor-pointer shadow-md"
                 >
                   Save FAQ
@@ -2489,7 +2480,7 @@ export const Admin: React.FC = () => {
                 };
                 updated = [newTestimonial, ...testimonialsList];
                 setTestimonialsList(updated);
-                
+
                 if (isDemo || !supabase) {
                   localStorage.setItem('medora_testimonials', JSON.stringify(updated));
                   ok = true;
@@ -2507,7 +2498,7 @@ export const Admin: React.FC = () => {
               } else {
                 updated = testimonialsList.map(t => t.id === editingTestimonial.id ? { ...t, ...editingTestimonial } : t);
                 setTestimonialsList(updated);
-                
+
                 if (isDemo || !supabase) {
                   localStorage.setItem('medora_testimonials', JSON.stringify(updated));
                   ok = true;
@@ -2533,46 +2524,46 @@ export const Admin: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Patient Name</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     required
-                    value={editingTestimonial.name || ''} 
+                    value={editingTestimonial.name || ''}
                     onChange={(e) => setEditingTestimonial({ ...editingTestimonial, name: e.target.value })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Role / Clinical Diagnosis</label>
-                  <input 
-                    type="text" 
-                    value={editingTestimonial.role || ''} 
+                  <input
+                    type="text"
+                    value={editingTestimonial.role || ''}
                     onChange={(e) => setEditingTestimonial({ ...editingTestimonial, role: e.target.value })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Review Message Body</label>
-                <textarea 
+                <textarea
                   required
-                  value={editingTestimonial.message || ''} 
+                  value={editingTestimonial.message || ''}
                   onChange={(e) => setEditingTestimonial({ ...editingTestimonial, message: e.target.value })}
                   rows={3}
-                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-slate-400 font-mono text-[9px] uppercase">Rating Index</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     min="1"
                     max="5"
-                    value={editingTestimonial.rating || 5} 
+                    value={editingTestimonial.rating || 5}
                     onChange={(e) => setEditingTestimonial({ ...editingTestimonial, rating: Number(e.target.value) })}
-                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
                 </div>
               </div>
@@ -2580,21 +2571,21 @@ export const Admin: React.FC = () => {
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Patient Avatar CDN URL</label>
                 <div className="flex gap-2">
-                  <input 
-                    type="text" 
-                    value={editingTestimonial.imageUrl || ''} 
+                  <input
+                    type="text"
+                    value={editingTestimonial.imageUrl || ''}
                     onChange={(e) => setEditingTestimonial({ ...editingTestimonial, imageUrl: e.target.value })}
                     placeholder="https://"
-                    className="flex-grow rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                    className="flex-grow rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                   />
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
-                    className="hidden" 
+                    className="hidden"
                     id="testimonial-avatar-file"
                     onChange={(e) => handleFileUpload(e, 'testimonial')}
                   />
-                  <button 
+                  <button
                     type="button"
                     onClick={() => document.getElementById('testimonial-avatar-file')?.click()}
                     disabled={isUploadingImage}
@@ -2606,15 +2597,15 @@ export const Admin: React.FC = () => {
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setEditingTestimonial(null)}
                   className="px-5 py-3 rounded-xl border border-white/5 bg-white/5 text-slate-300 hover:bg-white/10 font-bold text-xs font-mono uppercase cursor-pointer"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs font-mono uppercase tracking-widest cursor-pointer shadow-md"
                 >
                   Save Review
@@ -2651,36 +2642,36 @@ export const Admin: React.FC = () => {
             }} className="space-y-4 text-xs sm:text-sm">
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Semantic Keyword Trigger</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   required
-                  value={editingKnowledge.keyword || ''} 
+                  value={editingKnowledge.keyword || ''}
                   onChange={(e) => setEditingKnowledge({ ...editingKnowledge, keyword: e.target.value })}
-                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-slate-400 font-mono text-[9px] uppercase">Response Instruction Copy</label>
-                <textarea 
+                <textarea
                   required
-                  value={editingKnowledge.responseText || ''} 
+                  value={editingKnowledge.responseText || ''}
                   onChange={(e) => setEditingKnowledge({ ...editingKnowledge, responseText: e.target.value })}
                   rows={4}
-                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]" 
+                  className="w-full rounded-xl border border-white/10 px-4 py-2.5 text-slate-200 bg-[#080721]"
                 />
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setEditingKnowledge(null)}
                   className="px-5 py-3 rounded-xl border border-white/5 bg-white/5 text-slate-300 hover:bg-white/10 font-bold text-xs font-mono uppercase cursor-pointer"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs font-mono uppercase tracking-widest cursor-pointer shadow-md"
                 >
                   Save Keyword
