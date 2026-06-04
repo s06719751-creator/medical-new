@@ -36,13 +36,13 @@ export const Blog: React.FC = () => {
       <div className="w-full max-w-4xl mx-auto px-6 py-12 text-left animate-[fadeIn_0.35s_ease-out]">
         <button
           onClick={() => setActiveArticle(null)}
-          className="mb-8 px-4 py-2 rounded-xl glass-panel border-white/10 hover:border-purple-500/30 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all select-none hover:-translate-x-0.5"
+          className="mb-8 px-4 py-2 rounded-xl glass-panel border-purple-500/20 hover:border-purple-500/40 text-slate-600 hover:text-slate-800 text-xs font-semibold flex items-center gap-1.5 transition-all select-none hover:-translate-x-0.5"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Articles
         </button>
 
-        <article className="glass-panel rounded-3xl border-white/10 overflow-hidden shadow-2xl bg-[#070624]/60">
+        <article className="glass-panel rounded-3xl border-purple-500/10 overflow-hidden shadow-2xl">
           {/* Cover image */}
           <div className="w-full aspect-[21/9] bg-slate-900 overflow-hidden relative">
             <img src={activeArticle.coverImage} alt={activeArticle.title} className="w-full h-full object-cover" />
@@ -58,24 +58,24 @@ export const Blog: React.FC = () => {
 
           <div className="p-6 lg:p-10 space-y-6">
             {/* Author / Date Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-6 text-xs text-slate-400 font-mono">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-6 text-xs text-slate-655 font-mono">
               <div className="flex items-center gap-3">
                 <img src={activeArticle.authorAvatar} alt={activeArticle.authorName} className="w-9 h-9 rounded-full object-cover border border-purple-400/20" />
-                <span>Written by <strong className="text-slate-200">{activeArticle.authorName}</strong></span>
+                <span>Written by <strong className="text-slate-800">{activeArticle.authorName}</strong></span>
               </div>
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-cyan-400" />
+                <Calendar className="w-4 h-4 text-cyan-600" />
                 <span>{new Date(activeArticle.publishedAt).toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' })}</span>
               </div>
             </div>
 
             {/* Title */}
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-white leading-tight font-sans tracking-tight">
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-800 leading-tight font-sans tracking-tight">
               {activeArticle.title}
             </h1>
 
             {/* Content paragraph markup */}
-            <div className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans space-y-4 pt-2">
+            <div className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans space-y-4 pt-2">
               {activeArticle.content.split('\n').map((para, idx) => (
                 <p key={idx}>{para}</p>
               ))}
@@ -83,8 +83,8 @@ export const Blog: React.FC = () => {
             
             {/* Disclaimer notice inside article */}
             <div className="glass-panel border-rose-500/20 rounded-xl p-4 bg-rose-950/5 mt-8 flex items-start gap-3">
-              <ShieldCheck className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-              <p className="text-[11px] text-slate-400 leading-relaxed font-mono">
+              <ShieldCheck className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
+              <p className="text-[11px] text-slate-600 leading-relaxed font-mono">
                 IMPORTANT: Articles in this section are authored by certified specialists and reflect medical science parameters for educational clarity. They do not constitute diagnostic medical treatments or replacement clinical prescriptions.
               </p>
             </div>
@@ -101,17 +101,17 @@ export const Blog: React.FC = () => {
 
       {/* Header */}
       <div className="max-w-3xl mb-12">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full glass-panel border-purple-500/20 bg-purple-500/5 text-purple-300 text-xs font-semibold uppercase tracking-wider font-mono mb-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full glass-panel border-purple-500/20 bg-purple-500/10 text-purple-750 text-xs font-semibold uppercase tracking-wider font-mono mb-4">
           <Newspaper className="w-3.5 h-3.5" />
           Clinical Research & Resources
         </div>
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight mb-4">
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-800 leading-tight mb-4">
           Healthcare Resources & <br />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-cyan-600">
             Preventative Digests
           </span>
         </h1>
-        <p className="text-slate-400 text-sm leading-relaxed">
+        <p className="text-slate-655 text-sm leading-relaxed">
           Stay informed with medical digests written by verified specialist physicians, covering diagnostics, longevity tracking science, and EHR database encryptions.
         </p>
       </div>
@@ -139,7 +139,7 @@ export const Blog: React.FC = () => {
               className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
                 selectedTag === t 
                   ? 'bg-purple-600 text-white shadow-md' 
-                  : 'glass-panel text-slate-400 hover:text-slate-200 border-white/10 hover:bg-white/5'
+                  : 'glass-panel text-slate-655 hover:text-slate-800 border-purple-500/10 hover:bg-purple-500/5'
               }`}
             >
               {t === 'All' ? 'All Articles' : t}
@@ -172,22 +172,22 @@ export const Blog: React.FC = () => {
 
               {/* Description */}
               <div className="p-5 text-left flex flex-col gap-3 flex-grow">
-                <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono">
-                  <Calendar className="w-3.5 h-3.5 text-cyan-400" />
+                <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-mono">
+                  <Calendar className="w-3.5 h-3.5 text-cyan-600" />
                   <span>{new Date(post.publishedAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                 </div>
                 
-                <h3 className="font-extrabold text-slate-100 text-base leading-snug group-hover:text-purple-400 transition-colors">
+                <h3 className="font-extrabold text-slate-800 text-base leading-snug group-hover:text-purple-600 transition-colors">
                   {post.title}
                 </h3>
                 
-                <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">
+                <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
                   {post.excerpt}
                 </p>
 
-                <div className="flex items-center justify-between border-t border-white/5 pt-4 mt-2">
-                  <div className="flex items-center gap-2 text-[10px] text-slate-300 font-mono">
-                    <img src={post.authorAvatar} alt={post.authorName} className="w-6 h-6 rounded-full object-cover border border-white/10" />
+                <div className="flex items-center justify-between border-t border-slate-100 pt-4 mt-2">
+                  <div className="flex items-center gap-2 text-[10px] text-slate-600 font-mono">
+                    <img src={post.authorAvatar} alt={post.authorName} className="w-6 h-6 rounded-full object-cover border border-purple-500/10" />
                     <span>{post.authorName}</span>
                   </div>
                   <span className="text-[10px] font-semibold text-purple-400 flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
@@ -200,10 +200,10 @@ export const Blog: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="glass-panel rounded-3xl p-12 text-center max-w-xl mx-auto border-white/5 flex flex-col items-center gap-4">
+        <div className="glass-panel rounded-3xl p-12 text-center max-w-xl mx-auto border-purple-500/10 flex flex-col items-center gap-4">
           <Newspaper className="w-12 h-12 text-purple-400 animate-pulse" />
-          <h3 className="text-lg font-bold text-white">No Resources Found</h3>
-          <p className="text-xs text-slate-400 leading-relaxed">
+          <h3 className="text-lg font-bold text-slate-800">No Resources Found</h3>
+          <p className="text-xs text-slate-655 leading-relaxed">
             Adjust your tag selections or search descriptors. Check back soon for updated clinical research publications.
           </p>
         </div>

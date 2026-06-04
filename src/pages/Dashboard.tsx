@@ -89,8 +89,8 @@ export const Dashboard: React.FC = () => {
       <div className="w-full max-w-xl mx-auto px-6 py-16 text-center">
         <GlowingCard glowColor="purple" className="p-8 flex flex-col items-center gap-4">
           <ShieldAlert className="w-12 h-12 text-purple-400 animate-pulse" />
-          <h3 className="text-lg font-bold text-white">Login Session Required</h3>
-          <p className="text-xs text-slate-400">Please establish your portal login coordinates first to access this dashboard.</p>
+          <h3 className="text-lg font-bold text-slate-800">Login Session Required</h3>
+          <p className="text-xs text-slate-600">Please establish your portal login coordinates first to access this dashboard.</p>
         </GlowingCard>
       </div>
     );
@@ -106,8 +106,8 @@ export const Dashboard: React.FC = () => {
         <div className="flex items-center gap-3">
           <img src={user.avatarUrl} alt={user.fullName} className="w-14 h-14 rounded-full border border-purple-500/30 object-cover" />
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight leading-none mb-1.5">{user.fullName}</h1>
-            <span className="text-xs text-slate-400 font-mono">Patient EHR Coordinates: <strong className="text-purple-400">{user.id}</strong></span>
+            <h1 className="text-2xl font-bold text-slate-800 tracking-tight leading-none mb-1.5">{user.fullName}</h1>
+            <span className="text-xs text-slate-600 font-mono">Patient EHR Coordinates: <strong className="text-purple-600">{user.id}</strong></span>
           </div>
         </div>
 
@@ -195,27 +195,27 @@ export const Dashboard: React.FC = () => {
                   </div>
                   <div className="text-left font-mono">
                     <span className="text-[10px] text-slate-500 block leading-tight">Cardio pulse</span>
-                    <span className="text-base font-bold text-white">{user.heartRate} <span className="text-[10px] text-purple-400 font-normal">bpm</span></span>
+                    <span className="text-base font-bold text-slate-800">{user.heartRate} <span className="text-[10px] text-purple-600 font-normal">bpm</span></span>
                   </div>
                 </GlowingCard>
 
                 <GlowingCard glowColor="blue" className="p-5 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20">
-                    <Activity className="w-5 h-5 text-cyan-400" />
+                    <Activity className="w-5 h-5 text-cyan-500" />
                   </div>
                   <div className="text-left font-mono">
                     <span className="text-[10px] text-slate-500 block leading-tight">Longevity score</span>
-                    <span className="text-base font-bold text-white">{user.healthScore} <span className="text-[10px] text-cyan-400 font-semibold font-sans uppercase">Excellent</span></span>
+                    <span className="text-base font-bold text-slate-800">{user.healthScore} <span className="text-[10px] text-cyan-600 font-semibold font-sans uppercase">Excellent</span></span>
                   </div>
                 </GlowingCard>
 
                 <GlowingCard glowColor="magenta" className="p-5 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-fuchsia-500/10 flex items-center justify-center border border-fuchsia-500/20">
-                    <Award className="w-5 h-5 text-fuchsia-400" />
+                    <Award className="w-5 h-5 text-fuchsia-500" />
                   </div>
                   <div className="text-left font-mono">
                     <span className="text-[10px] text-slate-500 block leading-tight">Sleep Quality</span>
-                    <span className="text-base font-bold text-white">{user.sleepQuality}% <span className="text-[10px] text-fuchsia-400 font-normal">Optimized</span></span>
+                    <span className="text-base font-bold text-slate-800">{user.sleepQuality}% <span className="text-[10px] text-fuchsia-600 font-normal">Optimized</span></span>
                   </div>
                 </GlowingCard>
               </div>
@@ -223,7 +223,7 @@ export const Dashboard: React.FC = () => {
               {/* Profile Editor */}
               <GlowingCard glowColor="purple" className="p-8">
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="font-extrabold text-slate-100 text-base">Health Profile Coordinates</h3>
+                  <h3 className="font-extrabold text-slate-800 text-base">Health Profile Coordinates</h3>
                   <button
                     onClick={() => { setEditingProfile(!editingProfile); setProfileForm({ fullName: user.fullName, heartRate: user.heartRate, healthScore: user.healthScore, sleepQuality: user.sleepQuality }); }}
                     className="text-xs text-purple-400 hover:text-purple-300 font-semibold flex items-center gap-1 cursor-pointer"
@@ -243,7 +243,7 @@ export const Dashboard: React.FC = () => {
                           required
                           value={profileForm.fullName}
                           onChange={(e) => setProfileForm({ ...profileForm, fullName: e.target.value })}
-                          className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-purple-500/50 bg-[#080721]"
+                          className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-500 focus:outline-none focus:border-purple-500/50"
                         />
                       </div>
                       <div className="flex flex-col gap-2">
@@ -252,7 +252,7 @@ export const Dashboard: React.FC = () => {
                           type="number"
                           value={profileForm.heartRate}
                           onChange={(e) => setProfileForm({ ...profileForm, heartRate: Number(e.target.value) })}
-                          className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-purple-500/50 bg-[#080721]"
+                          className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-500 focus:outline-none focus:border-purple-500/50"
                         />
                       </div>
                     </div>
@@ -264,7 +264,7 @@ export const Dashboard: React.FC = () => {
                           type="number"
                           value={profileForm.healthScore}
                           onChange={(e) => setProfileForm({ ...profileForm, healthScore: Number(e.target.value) })}
-                          className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-purple-500/50 bg-[#080721]"
+                          className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-500 focus:outline-none focus:border-purple-500/50"
                         />
                       </div>
                       <div className="flex flex-col gap-2">
@@ -273,7 +273,7 @@ export const Dashboard: React.FC = () => {
                           type="number"
                           value={profileForm.sleepQuality}
                           onChange={(e) => setProfileForm({ ...profileForm, sleepQuality: Number(e.target.value) })}
-                          className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-purple-500/50 bg-[#080721]"
+                          className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-500 focus:outline-none focus:border-purple-500/50"
                         />
                       </div>
                     </div>
@@ -286,22 +286,22 @@ export const Dashboard: React.FC = () => {
                     </button>
                   </form>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs sm:text-sm font-mono text-slate-300">
-                    <div className="flex justify-between border-b border-white/5 pb-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs sm:text-sm font-mono text-slate-700">
+                    <div className="flex justify-between border-b border-slate-100 pb-2">
                       <span className="text-slate-500">Patient identity:</span>
-                      <strong className="text-slate-200">{user.fullName}</strong>
+                      <strong className="text-slate-850">{user.fullName}</strong>
                     </div>
-                    <div className="flex justify-between border-b border-white/5 pb-2">
+                    <div className="flex justify-between border-b border-slate-100 pb-2">
                       <span className="text-slate-500">EmailCoordinates:</span>
-                      <strong className="text-slate-200">{user.email}</strong>
+                      <strong className="text-slate-850">{user.email}</strong>
                     </div>
-                    <div className="flex justify-between border-b border-white/5 pb-2">
+                    <div className="flex justify-between border-b border-slate-100 pb-2">
                       <span className="text-slate-500">EHR Sync Status:</span>
-                      <strong className="text-cyan-400">ACTIVE & SECURED</strong>
+                      <strong className="text-teal-600">ACTIVE & SECURED</strong>
                     </div>
-                    <div className="flex justify-between border-b border-white/5 pb-2">
+                    <div className="flex justify-between border-b border-slate-100 pb-2">
                       <span className="text-slate-500">Account Access:</span>
-                      <strong className="text-purple-400 capitalize">{user.role}</strong>
+                      <strong className="text-purple-600 capitalize">{user.role}</strong>
                     </div>
                   </div>
                 )}
@@ -312,22 +312,22 @@ export const Dashboard: React.FC = () => {
           {/* Sub-tab 2: Appointments logs list */}
           {activeSubTab === 'appointments' && (
             <GlowingCard glowColor="purple" className="p-8">
-              <h3 className="font-extrabold text-slate-100 text-base mb-6">Upcoming Scheduled Slots</h3>
+              <h3 className="font-extrabold text-slate-800 text-base mb-6">Upcoming Scheduled Slots</h3>
               
               {myAppointments.length > 0 ? (
                 <div className="space-y-4">
                   {myAppointments.map((appt) => (
                     <div 
                       key={appt.id}
-                      className="glass-panel p-5 rounded-2xl border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-950/20"
+                      className="glass-panel p-5 rounded-2xl border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-950/5"
                     >
                       <div className="flex gap-3 text-left">
                         <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0 mt-0.5">
-                          <Calendar className="w-5 h-5 text-purple-400" />
+                          <Calendar className="w-5 h-5 text-purple-500" />
                         </div>
                         <div>
-                          <h4 className="font-bold text-slate-100 text-sm">{appt.doctor ? appt.doctor.name : 'Verified Physician'}</h4>
-                          <span className="text-xs text-slate-400 block font-mono mt-1">{appt.date} • {appt.time}</span>
+                          <h4 className="font-bold text-slate-800 text-sm">{appt.doctor ? appt.doctor.name : 'Verified Physician'}</h4>
+                          <span className="text-xs text-slate-600 block font-mono mt-1">{appt.date} • {appt.time}</span>
                           {appt.notes && (
                             <span className="text-[10px] text-slate-500 font-mono block mt-1">Note: {appt.notes}</span>
                           )}
@@ -370,8 +370,8 @@ export const Dashboard: React.FC = () => {
           {/* Sub-tab 3: Capsule schedules compliance checklist */}
           {activeSubTab === 'reminders' && (
             <GlowingCard glowColor="purple" className="p-8">
-              <h3 className="font-extrabold text-slate-100 text-base mb-2">Medicine Reminder Calendars</h3>
-              <p className="text-xs text-slate-400 mb-6">Tick off daily capsule schedules or add fresh prescriptions to your tracking calendar.</p>
+              <h3 className="font-extrabold text-slate-800 text-base mb-2">Medicine Reminder Calendars</h3>
+              <p className="text-xs text-slate-600 mb-6">Tick off daily capsule schedules or add fresh prescriptions to your tracking calendar.</p>
               
               {/* Add form */}
               <form onSubmit={addReminder} className="flex gap-2 mb-6">
@@ -381,7 +381,7 @@ export const Dashboard: React.FC = () => {
                   value={newReminder}
                   onChange={(e) => setNewReminder(e.target.value)}
                   placeholder="e.g., Capsule C: Neuro Diagnostics (After Lunch)"
-                  className="flex-grow glass-panel rounded-xl px-4 py-2 text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-500/50"
+                  className="flex-grow glass-panel rounded-xl px-4 py-2 text-xs sm:text-sm text-slate-800 placeholder-slate-500 focus:outline-none focus:border-purple-500/50"
                 />
                 <button
                   type="submit"
@@ -406,7 +406,7 @@ export const Dashboard: React.FC = () => {
                     }`}>
                       <Check className="w-3.5 h-3.5" />
                     </div>
-                    <span className={`text-left font-medium leading-none ${rem.done ? 'line-through text-slate-500' : 'text-slate-200'}`}>
+                    <span className={`text-left font-medium leading-none ${rem.done ? 'line-through text-slate-400' : 'text-slate-800'}`}>
                       {rem.text}
                     </span>
                   </div>
@@ -418,12 +418,12 @@ export const Dashboard: React.FC = () => {
           {/* Sub-tab 4: Medical report pdf parsers */}
           {activeSubTab === 'reports' && (
             <GlowingCard glowColor="purple" className="p-8">
-              <h3 className="font-extrabold text-slate-100 text-base mb-2">My Electronic Health Records</h3>
-              <p className="text-xs text-slate-400 mb-6">Upload blood panels or clinic scans in PDF format. Medora’s AI extracts values automatically.</p>
+              <h3 className="font-extrabold text-slate-800 text-base mb-2">My Electronic Health Records</h3>
+              <p className="text-xs text-slate-600 mb-6">Upload blood panels or clinic scans in PDF format. Medora’s AI extracts values automatically.</p>
 
               {/* Upload simulation form */}
-              <form onSubmit={handleReportUpload} className="glass-panel p-5 rounded-2xl border-white/10 mb-8 bg-slate-950/30 flex flex-col sm:flex-row items-center gap-4">
-                <Upload className="w-8 h-8 text-cyan-400 shrink-0" />
+              <form onSubmit={handleReportUpload} className="glass-panel p-5 rounded-2xl border-white/10 mb-8 bg-slate-950/5 flex flex-col sm:flex-row items-center gap-4">
+                <Upload className="w-8 h-8 text-cyan-500 shrink-0" />
                 <div className="flex-grow w-full text-left">
                   <span className="text-[10px] font-bold font-mono text-slate-500 block mb-1 uppercase">Simulate PDF upload</span>
                   <input
@@ -432,7 +432,7 @@ export const Dashboard: React.FC = () => {
                     value={mockFileName}
                     onChange={(e) => setMockFileName(e.target.value)}
                     placeholder="e.g., Blood panel test.pdf"
-                    className="w-full glass-panel rounded-xl px-4 py-2 text-xs text-slate-200 bg-[#080721] focus:outline-none"
+                    className="w-full glass-panel rounded-xl px-4 py-2 text-xs text-slate-800 placeholder-slate-500 focus:outline-none focus:border-purple-500/50"
                   />
                 </div>
                 <button
@@ -446,11 +446,11 @@ export const Dashboard: React.FC = () => {
               {/* Reports list */}
               <div className="space-y-4 font-mono text-xs text-left">
                 {reports.map((rep) => (
-                  <div key={rep.id} className="glass-panel p-4 rounded-xl border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-950/20">
+                  <div key={rep.id} className="glass-panel p-4 rounded-xl border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-950/5">
                     <div className="flex items-center gap-3">
-                      <FileText className="w-5 h-5 text-purple-400 shrink-0" />
+                      <FileText className="w-5 h-5 text-purple-500 shrink-0" />
                       <div>
-                        <h4 className="font-semibold text-slate-200">{rep.name}</h4>
+                        <h4 className="font-semibold text-slate-800">{rep.name}</h4>
                         <span className="text-[10px] text-slate-500">{rep.size} • Uploaded {rep.date}</span>
                       </div>
                     </div>
@@ -473,7 +473,7 @@ export const Dashboard: React.FC = () => {
           {/* Sub-tab 5: Chat history records */}
           {activeSubTab === 'chats' && (
             <GlowingCard glowColor="purple" className="p-8">
-              <h3 className="font-extrabold text-slate-100 text-base mb-6">Saved AI Chat logs</h3>
+              <h3 className="font-extrabold text-slate-800 text-base mb-6">Saved AI Chat logs</h3>
               
               {myChats.length > 0 ? (
                 <div className="max-h-[360px] overflow-y-auto space-y-4 pr-2">
@@ -483,7 +483,7 @@ export const Dashboard: React.FC = () => {
                       className={`p-3.5 rounded-2xl text-xs max-w-[85%] text-left ${
                         chat.sender === 'user' 
                           ? 'bg-purple-600 text-white ml-auto rounded-tr-none' 
-                          : 'glass-panel text-slate-200 border-white/5 rounded-tl-none'
+                          : 'glass-panel text-slate-800 border-white/5 rounded-tl-none'
                       }`}
                     >
                       <p className="font-sans leading-relaxed">{chat.message}</p>

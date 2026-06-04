@@ -54,11 +54,11 @@ export const Toast: React.FC<ToastProps> = ({ message, onClose }) => {
       <div className={`glass-panel-heavy rounded-xl p-4 border ${config.border} ${config.bg} flex items-start gap-3 shadow-[0_10px_35px_-5px_rgba(0,0,0,0.5)]`}>
         <div className="flex-shrink-0 mt-0.5">{config.icon}</div>
         <div className="flex-grow">
-          <p className="text-sm font-medium text-slate-100">{message.text}</p>
+          <p className="text-sm font-medium text-slate-800">{message.text}</p>
         </div>
         <button
           onClick={onClose}
-          className="flex-shrink-0 text-slate-400 hover:text-slate-200 transition-colors p-0.5 rounded-lg hover:bg-white/5"
+          className="flex-shrink-0 text-slate-500 hover:text-slate-800 transition-colors p-0.5 rounded-lg hover:bg-black/5"
         >
           <X className="w-4 h-4" />
         </button>

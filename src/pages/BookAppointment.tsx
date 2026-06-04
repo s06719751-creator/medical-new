@@ -76,29 +76,29 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({ onSuccess }) =
           </div>
           
           <div className="space-y-2">
-            <h2 className="text-2xl font-extrabold text-white tracking-tight leading-none">Appointment Scheduled!</h2>
-            <p className="text-slate-400 text-xs leading-normal">
+            <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight leading-none">Appointment Scheduled!</h2>
+            <p className="text-slate-600 text-xs leading-normal">
               Your digital slot has been recorded in our physician diagnostic queue.
             </p>
           </div>
 
           {/* Details */}
-          <div className="w-full glass-panel border-white/5 p-5 rounded-2xl text-left text-xs sm:text-sm font-mono text-slate-300 space-y-3 bg-slate-950/20">
-            <div className="flex justify-between border-b border-white/5 pb-2">
+          <div className="w-full glass-panel border-slate-100 p-5 rounded-2xl text-left text-xs sm:text-sm font-mono text-slate-700 space-y-3 bg-slate-950/5">
+            <div className="flex justify-between border-b border-slate-100 pb-2">
               <span className="text-slate-500">Patient:</span>
-              <strong className="text-slate-200">{user?.fullName}</strong>
+              <strong className="text-slate-800">{user?.fullName}</strong>
             </div>
-            <div className="flex justify-between border-b border-white/5 pb-2">
+            <div className="flex justify-between border-b border-slate-100 pb-2">
               <span className="text-slate-500">Physician Specialist:</span>
-              <strong className="text-slate-200">{matchedDoc?.name}</strong>
+              <strong className="text-slate-800">{matchedDoc?.name}</strong>
             </div>
-            <div className="flex justify-between border-b border-white/5 pb-2">
+            <div className="flex justify-between border-b border-slate-100 pb-2">
               <span className="text-slate-500">Scheduled Date:</span>
-              <strong className="text-cyan-300">{date}</strong>
+              <strong className="text-cyan-600">{date}</strong>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500">Video Schedule Slot:</span>
-              <strong className="text-purple-400">{time}</strong>
+              <strong className="text-purple-600">{time}</strong>
             </div>
           </div>
 
@@ -121,14 +121,14 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({ onSuccess }) =
 
       {/* Header */}
       <div className="max-w-3xl mb-8 text-center sm:text-left">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full glass-panel border-purple-500/20 bg-purple-500/5 text-purple-300 text-xs font-semibold uppercase tracking-wider font-mono mb-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full glass-panel border-purple-500/20 bg-purple-500/10 text-purple-750 text-xs font-semibold uppercase tracking-wider font-mono mb-4">
           <Calendar className="w-3.5 h-3.5" />
           Telehealth Booking Queue
         </div>
-        <h1 className="text-3xl font-extrabold text-white mb-2 leading-tight">
+        <h1 className="text-3xl font-extrabold text-slate-800 mb-2 leading-tight">
           Request Diagnostic Schedule
         </h1>
-        <p className="text-slate-400 text-xs">
+        <p className="text-slate-600 text-xs">
           Select your specialist, date, and schedule. Secure video coordinates will sync directly to your dashboard logs.
         </p>
       </div>
@@ -137,8 +137,8 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({ onSuccess }) =
         {!user ? (
           <div className="text-center py-6 flex flex-col items-center gap-4">
             <ShieldAlert className="w-10 h-10 text-purple-400 animate-pulse" />
-            <h3 className="text-base font-bold text-white">Login Session Required</h3>
-            <p className="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto">
+            <h3 className="text-base font-bold text-slate-800">Login Session Required</h3>
+            <p className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto">
               Please log into your health account first to sync diagnostic calendars and register scheduled physician slots.
             </p>
           </div>
@@ -155,11 +155,11 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({ onSuccess }) =
                 required
                 value={doctorId}
                 onChange={(e) => setDoctorId(e.target.value)}
-                className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-200 bg-[#080721] focus:outline-none focus:border-purple-500/50"
+                className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-purple-500/50 bg-white"
               >
-                <option value="" className="bg-[#030014] text-slate-500">-- Choose practitioner --</option>
+                <option value="" className="text-slate-500">-- Choose practitioner --</option>
                 {activeDoctors.map((doc) => (
-                  <option key={doc.id} value={doc.id} className="bg-[#030014] text-slate-200">
+                  <option key={doc.id} value={doc.id} className="text-slate-800 bg-white">
                     {doc.name} ({doc.specialization}) — ${doc.consultationFee}
                   </option>
                 ))}
@@ -179,7 +179,7 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({ onSuccess }) =
                   min={new Date().toISOString().split('T')[0]}
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-purple-500/50 bg-[#080721]"
+                  className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-purple-500/50"
                 />
               </div>
 
@@ -192,11 +192,11 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({ onSuccess }) =
                   required
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
-                  className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-200 bg-[#080721] focus:outline-none focus:border-purple-500/50"
+                  className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-purple-500/50 bg-white"
                 >
-                  <option value="" className="bg-[#030014] text-slate-500">-- Choose time slot --</option>
+                  <option value="" className="text-slate-500">-- Choose time slot --</option>
                   {timeSlots.map((slot) => (
-                    <option key={slot} value={slot} className="bg-[#030014] text-slate-200">{slot}</option>
+                    <option key={slot} value={slot} className="text-slate-800 bg-white">{slot}</option>
                   ))}
                 </select>
               </div>
@@ -213,7 +213,7 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({ onSuccess }) =
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Mention primary symptoms, onset timelines, cardiovascular logs, or prior clinical details..."
-                className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-500/50 resize-none"
+                className="w-full glass-panel rounded-xl px-4 py-2.5 text-slate-800 placeholder-slate-500 focus:outline-none focus:border-purple-500/50 resize-none"
               />
             </div>
 

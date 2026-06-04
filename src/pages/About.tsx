@@ -27,17 +27,17 @@ export const About: React.FC = () => {
 
       {/* Header */}
       <div className="max-w-3xl mb-16">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full glass-panel border-purple-500/20 bg-purple-500/5 text-purple-300 text-xs font-semibold uppercase tracking-wider font-mono mb-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full glass-panel border-purple-500/20 bg-purple-500/10 text-purple-750 text-xs font-semibold uppercase tracking-wider font-mono mb-4">
           <Heart className="w-3.5 h-3.5" />
           Platform Science
         </div>
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight mb-4">
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-800 leading-tight mb-4">
           Empowering Health Longevity <br />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-cyan-600">
             Through Medical AI
           </span>
         </h1>
-        <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+        <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
           Medora AI was established in 2026 by a joint coalition of bio-medical AI architects, board physicians, and digital security engineers. Our mission is to democratize preventive diagnostics, remove clinical bottlenecks, and calibrate personal health baselines.
         </p>
       </div>
@@ -47,24 +47,24 @@ export const About: React.FC = () => {
         {values.map((item, i) => (
           <div 
             key={i}
-            className="glass-panel p-6 rounded-2xl border-white/5 flex flex-col gap-4 text-left"
+            className="glass-panel p-6 rounded-2xl border-purple-500/10 flex flex-col gap-4 text-left"
           >
-            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-purple-500/5 border border-purple-500/10 flex items-center justify-center shrink-0">
               {item.icon}
             </div>
             <div>
-              <h3 className="font-bold text-slate-100 text-sm mb-2">{item.title}</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+              <h3 className="font-bold text-slate-800 text-sm mb-2">{item.title}</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">{item.desc}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Technical Transparency Segment */}
-      <div className="glass-panel border-white/10 rounded-3xl p-8 lg:p-12 relative overflow-hidden flex flex-col lg:flex-row gap-10 items-center">
+      <div className="glass-panel border-purple-500/10 rounded-3xl p-8 lg:p-12 relative overflow-hidden flex flex-col lg:flex-row gap-10 items-center">
         <div className="flex-grow space-y-4">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Our Scientific Principles</h2>
-          <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-800">Our Scientific Principles</h2>
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
             Medora AI operates on transparent medical logic. All diagnostic triage runs through trained classifiers before offering guidance. We strictly reject third-party advertisement cookies on health logs and compile detailed clinical summaries that users can export to their personal local healthcare databases at any time.
           </p>
         </div>
