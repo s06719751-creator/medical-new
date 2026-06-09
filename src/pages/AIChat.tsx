@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useDb } from '../context/DbContext';
-import { getChatbotResponse } from '../services/aiService';
+import { getChatbotResponse, getChatbotStatus, resetChatbotStatus } from '../services/aiService';
 import {
   Send, Bot, ShieldAlert,
   RefreshCw, User, Stethoscope, Activity, Heart, AlertCircle,
@@ -18,7 +18,17 @@ export const AIChat: React.FC = () => {
   const { saveChatMessage, getChatHistory, clearChatHistory, knowledge } = useDb();
 
   const [input, setInput] = useState<string>('');
-  const [localHistory, setLocalHistory] = useState<{ id: string; sender: 'user' | 'ai'; message: string; createdAt: string }[]>([]);
+  const [localHistory, setLocalHistory] = useState<{
+    id: string;
+    sender: 'user' | 'ai';
+    message: string;
+    createdAt: string;
+    suggestedAction?: {
+      type: 'link' | 'prompt';
+      label: string;
+      value: string;
+    };
+  }[]>([]);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
 
@@ -36,7 +46,13 @@ export const AIChat: React.FC = () => {
         createdAt: new Date().toISOString()
       }]);
     } else {
-      setLocalHistory(hist.map(h => ({ id: h.id, sender: h.sender, message: h.message, createdAt: h.createdAt })));
+      setLocalHistory(hist.map(h => ({
+        id: h.id,
+        sender: h.sender,
+        message: h.message,
+        createdAt: h.createdAt,
+        suggestedAction: h.metadata?.suggestedAction
+      })));
     }
   }, [activeUserId]);
 
@@ -71,17 +87,15 @@ export const AIChat: React.FC = () => {
         id: generateUniqueId('ai'),
         sender: 'ai' as const,
         message: response.message || "I'm having trouble analyzing this right now. Please ask again in a moment.",
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        suggestedAction: response.suggestedAction
       };
 
       setLocalHistory(prev => [...prev, aiMsg]);
-      await saveChatMessage(activeUserId, response.message, 'ai', sessionId, { client: 'web-full-chat-ai' });
-
-      if (response.suggestedAction?.type === 'link') {
-        let targetTab = response.suggestedAction.value;
-        if (['reports', 'reminders', 'chats'].includes(targetTab)) targetTab = 'dashboard';
-        window.location.hash = `#/${targetTab}`;
-      }
+      await saveChatMessage(activeUserId, response.message || '', 'ai', sessionId, {
+        client: 'web-full-chat-ai',
+        suggestedAction: response.suggestedAction
+      });
     } catch (err) {
       console.error(err);
       setErrorMsg('Connection issue. Please try again.');
@@ -92,6 +106,7 @@ export const AIChat: React.FC = () => {
 
   const handleClearChat = () => {
     clearChatHistory(activeUserId);
+    resetChatbotStatus();
     setLocalHistory([{
       id: 'welcome',
       sender: 'ai',
@@ -167,21 +182,43 @@ export const AIChat: React.FC = () => {
         <div className="lg:col-span-8 bg-white border border-teal-100/80 shadow-[0_10px_40px_rgba(13,148,136,0.04)] rounded-[28px] overflow-hidden flex flex-col h-[78vh]">
           
           {/* Conversation view header */}
-          <div className="bg-gradient-to-r from-teal-600 to-emerald-600 px-6 py-4 flex items-center justify-between shadow-sm">
-            <div className="flex items-center gap-2.5">
-              <Bot className="w-5 h-5 text-white" />
-              <div className="text-left">
-                <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-bold text-white leading-none">AI Care Assistant</h4>
-                  <span className="flex h-2 w-2 relative">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
-                  </span>
+          {(() => {
+            const { status: connectionStatus, provider: activeProvider } = getChatbotStatus();
+            const providerName = activeProvider === 'openai' ? 'OpenAI' : 'Gemini';
+            return (
+              <div className="bg-gradient-to-r from-teal-600 to-emerald-600 px-6 py-4 flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-2.5">
+                  <Bot className="w-5 h-5 text-white" />
+                  <div className="text-left">
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-sm font-bold text-white leading-none">AI Care Assistant</h4>
+                      {connectionStatus === 'live' && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/20 text-emerald-100 border border-emerald-400/30">
+                          <span className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
+                          Live AI Mode ({providerName})
+                        </span>
+                      )}
+                      {connectionStatus === 'demo' && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-teal-500/20 text-teal-100 border border-teal-400/30">
+                          <span className="h-1 w-1 rounded-full bg-teal-300" />
+                          Local Demo Mode
+                        </span>
+                      )}
+                      {connectionStatus === 'error' && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-rose-500/20 text-rose-100 border border-rose-400/30">
+                          <span className="h-1.5 w-1.5 rounded-full bg-rose-400 animate-ping" />
+                          Connection Error ({providerName})
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[9px] text-teal-100 uppercase tracking-widest font-semibold font-mono">
+                      {connectionStatus === 'error' ? 'API Authorization Required' : 'Live Session Channel'}
+                    </span>
+                  </div>
                 </div>
-                <span className="text-[9px] text-teal-100 uppercase tracking-widest font-semibold font-mono">Live Session Channel</span>
               </div>
-            </div>
-          </div>
+            );
+          })()}
 
           {/* Messages Stream area */}
           <div ref={chatContainerRef} className="flex-grow overflow-y-auto p-6 flex flex-col gap-5 bg-teal-50/20">
@@ -202,6 +239,32 @@ export const AIChat: React.FC = () => {
                     {msg.message.split('\n').map((para, idx) => (
                       <p key={idx} className={idx > 0 ? 'mt-2' : ''}>{para}</p>
                     ))}
+
+                    {msg.suggestedAction && (
+                      <div className="mt-3 pt-2 border-t border-slate-100 flex justify-start">
+                        {msg.suggestedAction.type === 'link' ? (
+                          <button
+                            onClick={() => {
+                              let targetTab = msg.suggestedAction!.value;
+                              if (['reports', 'reminders', 'chats'].includes(targetTab)) targetTab = 'dashboard';
+                              window.location.hash = `#/${targetTab}`;
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-100 hover:border-teal-300 text-xs font-bold uppercase tracking-wider font-mono transition-all cursor-pointer"
+                          >
+                            {msg.suggestedAction.label}
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              handleSendMessage(msg.suggestedAction!.value);
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300 text-xs font-bold uppercase tracking-wider font-mono transition-all cursor-pointer"
+                          >
+                            {msg.suggestedAction.label}
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <span className="text-[9px] text-slate-400 font-mono mt-1 px-1 block">
                     {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

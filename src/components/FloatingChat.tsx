@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useDb } from '../context/DbContext';
-import { getChatbotResponse } from '../services/aiService';
+import { getChatbotResponse, getChatbotStatus, resetChatbotStatus } from '../services/aiService';
 import { MessageSquare, X, Send, Bot, ShieldAlert, Sparkles, RefreshCw, User, Stethoscope, Activity, Heart } from 'lucide-react';
 
 interface FloatingChatProps {
@@ -18,13 +18,46 @@ export const FloatingChat: React.FC<FloatingChatProps> = ({ onNavigate }) => {
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [input, setInput] = useState<string>('');
-  const [localHistory, setLocalHistory] = useState<{ id: string; sender: 'user' | 'ai'; message: string; createdAt: string }[]>([]);
+  const [localHistory, setLocalHistory] = useState<{
+    id: string;
+    sender: 'user' | 'ai';
+    message: string;
+    createdAt: string;
+    suggestedAction?: {
+      type: 'link' | 'prompt';
+      label: string;
+      value: string;
+    };
+  }[]>([]);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const chatWindowRef = useRef<HTMLDivElement>(null);
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
   const activeUserId = user ? user.id : 'guest_session';
   const [sessionId] = useState<string>(() => 'sess_' + Math.random().toString(36).substring(2, 9));
+
+  // Handle click outside to automatically close the chat window
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        chatWindowRef.current && 
+        !chatWindowRef.current.contains(event.target as Node) &&
+        toggleButtonRef.current &&
+        !toggleButtonRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     const hist = getChatHistory(activeUserId);
@@ -36,7 +69,13 @@ export const FloatingChat: React.FC<FloatingChatProps> = ({ onNavigate }) => {
         createdAt: new Date().toISOString()
       }]);
     } else {
-      setLocalHistory(hist.map(h => ({ id: h.id, sender: h.sender, message: h.message, createdAt: h.createdAt })));
+      setLocalHistory(hist.map(h => ({
+        id: h.id,
+        sender: h.sender,
+        message: h.message,
+        createdAt: h.createdAt,
+        suggestedAction: h.metadata?.suggestedAction
+      })));
     }
   }, [activeUserId, isOpen]);
 
@@ -67,15 +106,18 @@ export const FloatingChat: React.FC<FloatingChatProps> = ({ onNavigate }) => {
         knowledge
       );
 
-      const aiMsg = { id: generateUniqueId('ai'), sender: 'ai' as const, message: response.message, createdAt: new Date().toISOString() };
+      const aiMsg = {
+        id: generateUniqueId('ai'),
+        sender: 'ai' as const,
+        message: response.message,
+        createdAt: new Date().toISOString(),
+        suggestedAction: response.suggestedAction
+      };
       setLocalHistory(prev => [...prev, aiMsg]);
-      await saveChatMessage(activeUserId, response.message, 'ai', sessionId, { client: 'web-floating-chat-ai' });
-
-      if (response.suggestedAction?.type === 'link') {
-        let targetTab = response.suggestedAction.value;
-        if (['reports', 'reminders', 'chats'].includes(targetTab)) targetTab = 'dashboard';
-        onNavigate(targetTab);
-      }
+      await saveChatMessage(activeUserId, response.message || '', 'ai', sessionId, {
+        client: 'web-floating-chat-ai',
+        suggestedAction: response.suggestedAction
+      });
     } catch (err) {
       console.error(err);
       setErrorMsg('Connection issue. Please try again.');
@@ -86,6 +128,7 @@ export const FloatingChat: React.FC<FloatingChatProps> = ({ onNavigate }) => {
 
   const handleClearChat = () => {
     clearChatHistory(activeUserId);
+    resetChatbotStatus();
     setLocalHistory([{ id: 'welcome', sender: 'ai', message: 'Chat cleared. I\'m ready for new health questions. How can I help?', createdAt: new Date().toISOString() }]);
   };
 
@@ -103,34 +146,56 @@ export const FloatingChat: React.FC<FloatingChatProps> = ({ onNavigate }) => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed inset-0 sm:inset-auto sm:mb-4 sm:bottom-24 sm:right-6 w-full h-full sm:w-[400px] sm:h-[610px] rounded-none sm:rounded-3xl bg-white border border-teal-100 shadow-[0_20px_60px_rgba(13,148,136,0.2)] flex flex-col overflow-hidden animate-[slideIn_0.3s_cubic-bezier(0.16,1,0.3,1)]">
+        <div ref={chatWindowRef} className="fixed inset-0 sm:inset-auto sm:mb-4 sm:bottom-24 sm:right-6 w-full h-full sm:w-[400px] sm:h-[610px] rounded-none sm:rounded-3xl bg-white border border-teal-100 shadow-[0_20px_60px_rgba(13,148,136,0.2)] flex flex-col overflow-hidden animate-[slideIn_0.3s_cubic-bezier(0.16,1,0.3,1)]">
 
           {/* Header */}
-          <div className="bg-gradient-to-r from-teal-600 to-emerald-600 p-4 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
-                <Bot className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <h4 className="text-sm font-bold text-white">Medora AI Assistant</h4>
-                  <span className="flex h-2 w-2 relative">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
-                  </span>
+          {(() => {
+            const { status: connectionStatus, provider: activeProvider } = getChatbotStatus();
+            const providerName = activeProvider === 'openai' ? 'OpenAI' : 'Gemini';
+            return (
+              <div className="bg-gradient-to-r from-teal-600 to-emerald-600 p-4 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                    <Bot className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <h4 className="text-sm font-bold text-white">Medora AI Assistant</h4>
+                      {connectionStatus === 'live' && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/20 text-emerald-100 border border-emerald-400/30">
+                          <span className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
+                          Live AI Mode ({providerName})
+                        </span>
+                      )}
+                      {connectionStatus === 'demo' && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-teal-500/20 text-teal-100 border border-teal-400/30">
+                          <span className="h-1 w-1 rounded-full bg-teal-300" />
+                          Local Demo Mode
+                        </span>
+                      )}
+                      {connectionStatus === 'error' && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-rose-500/20 text-rose-100 border border-rose-400/30">
+                          <span className="h-1.5 w-1.5 rounded-full bg-rose-400 animate-ping" />
+                          Connection Error ({providerName})
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-teal-100 font-mono uppercase tracking-wider">
+                      {connectionStatus === 'error' ? 'API Authorization Required' : 'Medical Only · GPT-4 Powered'}
+                    </span>
+                  </div>
                 </div>
-                <span className="text-[10px] text-teal-100 font-mono uppercase tracking-wider">Medical Only · GPT-4 Powered</span>
+                <div className="flex items-center gap-1.5">
+                  <button onClick={handleClearChat} title="Clear History" className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors">
+                    <RefreshCw className="w-3.5 h-3.5" />
+                  </button>
+                  <button onClick={() => setIsOpen(false)} className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <button onClick={handleClearChat} title="Clear History" className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors">
-                <RefreshCw className="w-3.5 h-3.5" />
-              </button>
-              <button onClick={() => setIsOpen(false)} className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+            );
+          })()}
 
           {/* Disclaimer */}
           <div className="bg-teal-50 border-b border-teal-100 p-3 flex items-start gap-2.5">
@@ -162,6 +227,32 @@ export const FloatingChat: React.FC<FloatingChatProps> = ({ onNavigate }) => {
                     {msg.message.split('\n').map((para, i) => (
                       <p key={i} className={i > 0 ? 'mt-1.5' : ''}>{para}</p>
                     ))}
+
+                    {msg.suggestedAction && (
+                      <div className="mt-2.5 pt-2 border-t border-slate-100 flex justify-start">
+                        {msg.suggestedAction.type === 'link' ? (
+                          <button
+                            onClick={() => {
+                              let targetTab = msg.suggestedAction!.value;
+                              if (['reports', 'reminders', 'chats'].includes(targetTab)) targetTab = 'dashboard';
+                              onNavigate(targetTab);
+                            }}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-100 hover:border-teal-300 text-[10px] font-bold uppercase tracking-wider font-mono transition-all cursor-pointer"
+                          >
+                            {msg.suggestedAction.label}
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              handleSendMessage(msg.suggestedAction!.value);
+                            }}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300 text-[10px] font-bold uppercase tracking-wider font-mono transition-all cursor-pointer"
+                          >
+                            {msg.suggestedAction.label}
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <span className="text-[9px] text-slate-400 font-mono mt-1 block px-1">
                     {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -227,6 +318,7 @@ export const FloatingChat: React.FC<FloatingChatProps> = ({ onNavigate }) => {
 
       {/* Floating Toggle Button */}
       <button
+        ref={toggleButtonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="w-14 h-14 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 shadow-[0_6px_24px_rgba(13,148,136,0.45)] hover:shadow-[0_8px_32px_rgba(13,148,136,0.65)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center"
         style={{ animation: 'tealPulse 2s infinite ease-in-out' }}

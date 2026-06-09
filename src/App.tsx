@@ -22,6 +22,7 @@ import { Auth } from './pages/Auth';
 import { Dashboard } from './pages/Dashboard';
 import { Admin } from './pages/Admin';
 import { AIChat } from './pages/AIChat';
+import { Encyclopedia } from './pages/Encyclopedia';
 
 const AppContent: React.FC = () => {
   
@@ -61,6 +62,8 @@ const AppContent: React.FC = () => {
     switch (activeTab) {
       case 'chat':
         return <AIChat />;
+      case 'encyclopedia':
+        return <Encyclopedia />;
       case 'home':
         return <Home onTabChange={handleTabChange} />;
       case 'features':

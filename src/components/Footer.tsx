@@ -59,7 +59,7 @@ export const Footer: React.FC<FooterProps> = ({ onTabChange }) => {
         <div>
           <h4 className="text-sm font-semibold text-teal-200 uppercase tracking-wider mb-5">Quick Links</h4>
           <ul className="flex flex-col gap-2.5 text-sm text-teal-400">
-            {[['home', 'Home'], ['how-it-works', 'How It Works'], ['pricing', 'Pricing'], ['blog', 'Resources'], ['about', 'About'], ['contact', 'Contact']].map(([tab, label]) => (
+            {[['home', 'Home'], ['how-it-works', 'How It Works'], ['pricing', 'Pricing'], ['blog', 'Resources'], ['encyclopedia', 'Encyclopedia'], ['about', 'About'], ['contact', 'Contact']].map(([tab, label]) => (
               <li key={label}><button onClick={() => onTabChange(tab)} className="hover:text-teal-200 transition-colors">{label}</button></li>
             ))}
           </ul>

@@ -151,14 +151,14 @@ export const Home: React.FC<HomeProps> = ({ onTabChange }) => {
           <div className="relative flex items-center justify-center">
             {/* Main hero image */}
             <div className="relative w-full max-w-[520px] animate-[floatSlow_7s_ease-in-out_infinite]">
-              <div className="relative rounded-3xl overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.4)] border border-white/10">
+              <div className="relative rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.4)] border border-white/10">
                 <img
                   src={heroImg}
                   alt="Medora AI — Clinical Health Intelligence"
-                  className="w-full h-auto object-cover rounded-3xl"
+                  className="w-full h-auto object-cover rounded-[2rem] md:rounded-[2.5rem]"
                 />
                 {/* Subtle overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-teal-900/20 via-transparent to-transparent rounded-3xl" />
+                <div className="absolute inset-0 bg-gradient-to-t from-teal-900/20 via-transparent to-transparent rounded-[2rem] md:rounded-[2.5rem]" />
               </div>
 
               {/* HUD Overlay Card: Heart Rate */}

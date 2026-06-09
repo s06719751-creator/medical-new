@@ -2,6 +2,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase, isDemoMode } from '../services/supabase';
 
+const isValidUuid = (id: string): boolean => {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(id);
+};
+
 // =====================================================================
 // DATA MODELS & INTERFACES
 // =====================================================================
@@ -364,6 +369,33 @@ export const DbProvider: React.FC<{ children: React.ReactNode }> = ({ children }
             createdAt: c.created_at
           })));
         }
+
+        // Fetch chat messages for this user
+        if (isValidUuid(userData.user.id)) {
+          const { data: chatData } = await supabase.from('chat_messages')
+            .select('*')
+            .eq('user_id', userData.user.id)
+            .order('created_at', { ascending: true });
+          
+          if (chatData) {
+            const dbChats = chatData.map((c: any) => ({
+              id: c.id,
+              userId: c.user_id,
+              message: c.message,
+              sender: c.sender,
+              createdAt: c.created_at,
+              sessionId: c.session_id,
+              metadata: c.metadata
+            }));
+            setChatMessages(prev => {
+              const nonUserChats = prev.filter(x => x.userId !== userData.user.id);
+              return [...nonUserChats, ...dbChats];
+            });
+          }
+        }
+      } else {
+        // Clean out any authenticated chats from React state, keep only guest/local chats
+        setChatMessages(prev => prev.filter(c => !isValidUuid(c.userId)));
       }
     } catch (err) {
       console.warn('Supabase fetch failed, continuing in static mode:', err);
@@ -372,6 +404,16 @@ export const DbProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
   // --- Initial load & local storage sync ---
   useEffect(() => {
+    // Load local storage chats first in all modes to recover guest history
+    const savedChats = localStorage.getItem('medora_chats');
+    if (savedChats) {
+      try {
+        setChatMessages(JSON.parse(savedChats));
+      } catch (e) {
+        console.warn('Failed to parse local chats:', e);
+      }
+    }
+
     if (isDemoMode) {
       // Sync with localStorage to keep demo experience continuous and fully interactive
       const savedSettings = localStorage.getItem('medora_settings');
@@ -398,14 +440,21 @@ export const DbProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       const savedContacts = localStorage.getItem('medora_contacts');
       if (savedContacts) setContactMessages(JSON.parse(savedContacts));
 
-      const savedChats = localStorage.getItem('medora_chats');
-      if (savedChats) setChatMessages(JSON.parse(savedChats));
-
       const savedKnowledge = localStorage.getItem('medora_knowledge');
       if (savedKnowledge) setKnowledge(JSON.parse(savedKnowledge));
     } else {
       // Fetch dynamic contents from active Supabase server
       fetchFromSupabase();
+
+      // Listen for auth state changes to reload data reactively
+      if (supabase) {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+          fetchFromSupabase();
+        });
+        return () => {
+          subscription.unsubscribe();
+        };
+      }
     }
   }, []);
 
@@ -711,7 +760,7 @@ export const DbProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       return true;
     }
 
-    if (!supabase) return false;
+    if (!supabase || !isValidUuid(appt.userId)) return false;
     try {
       const payload = {
         user_id: appt.userId,
@@ -833,11 +882,17 @@ export const DbProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       metadata
     };
     
-    const updated = [...chatMessages, newChat];
-    setChatMessages(updated);
+    setChatMessages(prev => [...prev, newChat]);
 
-    if (isDemoMode) {
-      localStorage.setItem('medora_chats', JSON.stringify(updated));
+    if (isDemoMode || !isValidUuid(userId)) {
+      try {
+        const savedChats = localStorage.getItem('medora_chats');
+        const chatsList = savedChats ? JSON.parse(savedChats) : [];
+        chatsList.push(newChat);
+        localStorage.setItem('medora_chats', JSON.stringify(chatsList));
+      } catch (e) {
+        console.warn('Failed saving local chat:', e);
+      }
       return newChat;
     }
 
@@ -852,7 +907,7 @@ export const DbProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       }).select().single();
       
       if (!error && data) {
-        return {
+        const dbChat: ChatMessage = {
           id: data.id,
           userId: data.user_id,
           message: data.message,
@@ -861,6 +916,10 @@ export const DbProvider: React.FC<{ children: React.ReactNode }> = ({ children }
           sessionId: data.session_id,
           metadata: data.metadata
         };
+        setChatMessages(prev => prev.map(c => c.id === newChat.id ? dbChat : c));
+        return dbChat;
+      } else {
+        console.error('Supabase error inserting chat message:', error);
       }
     } catch (err) {
       console.error('Failed saving chat:', err);
@@ -873,11 +932,19 @@ export const DbProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   };
 
   const clearChatHistory = (userId: string) => {
-    const updated = chatMessages.filter(c => c.userId !== userId);
-    setChatMessages(updated);
-    if (isDemoMode) {
-      localStorage.setItem('medora_chats', JSON.stringify(updated));
-    } else if (supabase) {
+    setChatMessages(prev => prev.filter(c => c.userId !== userId));
+    if (isDemoMode || !isValidUuid(userId)) {
+      try {
+        const savedChats = localStorage.getItem('medora_chats');
+        if (savedChats) {
+          const chatsList = JSON.parse(savedChats) as ChatMessage[];
+          const filtered = chatsList.filter(c => c.userId !== userId);
+          localStorage.setItem('medora_chats', JSON.stringify(filtered));
+        }
+      } catch (e) {
+        console.warn('Failed clearing local chat:', e);
+      }
+    } else if (supabase && isValidUuid(userId)) {
       supabase.from('chat_messages').delete().eq('user_id', userId).then();
     }
   };
