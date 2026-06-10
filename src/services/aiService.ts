@@ -645,20 +645,31 @@ const callGemini = async (
 
   const modelsToTry = ['gemini-flash-latest', 'gemini-flash-lite-latest'];
   let lastError: any = null;
+  const isOAuth = apiKey.startsWith('AQ.');
 
   for (const model of modelsToTry) {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
 
+      const url = isOAuth
+        ? `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`
+        : `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+
+      if (isOAuth) {
+        headers['Authorization'] = `Bearer ${apiKey}`;
+      }
+
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        url,
         {
           signal: controller.signal,
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers,
           body: JSON.stringify({
             contents,
             systemInstruction: {
