@@ -590,11 +590,12 @@ const callOpenAI = async (
     if (!response.ok) {
       const status = response.status;
       let errText = '';
+      const rawText = await response.text();
       try {
-        const errJson = await response.json();
-        errText = errJson?.error?.message || response.statusText;
+        const errJson = JSON.parse(rawText);
+        errText = errJson?.error?.message || rawText || response.statusText;
       } catch (e) {
-        errText = await response.text();
+        errText = rawText || response.statusText;
       }
       const errorMsg = `OpenAI API error (${status}): ${errText}`;
       console.error(errorMsg);
@@ -675,11 +676,12 @@ const callGemini = async (
       if (!response.ok) {
         const status = response.status;
         let errText = '';
+        const rawText = await response.text();
         try {
-          const errJson = await response.json();
-          errText = errJson?.error?.message || response.statusText;
+          const errJson = JSON.parse(rawText);
+          errText = errJson?.error?.message || rawText || response.statusText;
         } catch (e) {
-          errText = await response.text();
+          errText = rawText || response.statusText;
         }
         const errorMsg = `Gemini API error (${status}) with model ${model}: ${errText}`;
         console.warn(errorMsg);
