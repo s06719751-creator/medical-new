@@ -643,7 +643,7 @@ const callGemini = async (
     parts: [{ text: userMessage || '' }]
   });
 
-  const modelsToTry = ['gemini-flash-latest', 'gemini-flash-lite-latest'];
+  const modelsToTry = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-flash-lite-latest'];
   let lastError: any = null;
   const isOAuth = apiKey.startsWith('AQ.');
 
